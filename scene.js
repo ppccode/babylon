@@ -21,7 +21,12 @@ var createScene = function (engine) {
 	skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
 	skybox.material = skyboxMaterial;
 
-	var ball = new Ball(scene, 2, "sphere2", 1.1, 0.5, 0);
+	var dummyMain = new BABYLON.Mesh("dummy", scene);
+
+	var ball = new Ball(dummyMain, 2, "sphere1", 2, 2, 0);
+
+	var ball2 = new Ball(dummyMain, 2, "sphere2", -2, 2, 0);
+	var ball3 = new Ball(dummyMain, 2, "sphere3", 0, 0, 0);
 
 	//var sphereAlpha = ball.sphere.clone("sphereAlpha");
 	//sphereAlpha.position.x -= 2.1;
