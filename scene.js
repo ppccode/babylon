@@ -6,20 +6,16 @@
 var createScene = function (engine) {
 	var scene = new BABYLON.Scene(engine);
 
-	var camera = new BABYLON.ArcRotateCamera("Camera", 3 * Math.PI / 2, Math.PI / 4, 100, BABYLON.Vector3.Zero(), scene);
+	//var camera = new BABYLON.ArcRotateCamera("Camera", 3 * Math.PI / 2, Math.PI / 2, 10, BABYLON.Vector3.Zero(), scene);
+
+	var camera = new BABYLON.FreeCamera("sceneCamera", new BABYLON.Vector3(0, 1, -15), scene);
 	camera.attachControl(canvas, true);
+	camera.keysUp.push(87);    //W
+    camera.keysDown.push(83)   //D
+    camera.keysLeft.push(65);  //A
+    camera.keysRight.push(68); //S
 
 	var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-	
-	// Skybox
-	var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1000.0}, scene);
-	var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
-	skyboxMaterial.backFaceCulling = false;
-	skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/TropicalSunnyDay/TropicalSunnyDay", scene);
-	skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-	skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-	skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-	skybox.material = skyboxMaterial;
 
 	var dummyMain = new MainMesh(scene);
 
@@ -27,6 +23,15 @@ var createScene = function (engine) {
 	var ball2 = new Ball(dummyMain, 2, "sphere2", -2, 2, 0);
 	var ball3 = new Ball(dummyMain, 2, "sphere3", 0, 0, 0);
 
+	camera.onViewMatrixChangedObservable.add(function() {
+		dummyMain.cameraChanged(camera);
+	});
+
+	scene.registerBeforeRender(function () {
+		//box.lookAt(sphere.position);
+	});
+	
+	
 
 	return scene;
 }

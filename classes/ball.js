@@ -7,68 +7,140 @@ class Ball {
     sphere;
     isEnabled;
     highlight;
+    face;
+    material;
 
-    constructor(parent, diameter, name, x, y, z){
+    constructor(parent, diameter, name, x, y, z) {
 
         //this.scene = scene;
         this.diameter = diameter;
         this.name = name;
         this.isEnabled = false;
 
-        this.sphere = BABYLON.Mesh.CreateSphere(name, 16, diameter, parent._scene);
-        this.sphere.parent = parent;
-	    this.sphere.position.x = x;
-        this.sphere.position.y = y;
-        this.sphere.position.z = z;
+
+        // create face
+        var materialPlane = new BABYLON.StandardMaterial("texturePlane", parent._scene);
+        materialPlane.diffuseTexture = new BABYLON.Texture("textures/obama-face-png-3", parent._scene);
+        materialPlane.opacityTexture = new BABYLON.Texture("textures/obama-face-png-3", parent._scene);
+        materialPlane.emissiveTexture = new BABYLON.Texture("textures/obama-face-png-3", scene);
+        materialPlane.specularColor = new BABYLON.Color3(0, 0, 0);
+        materialPlane.backFaceCulling = false;//Allways show the front and the back of an element
+
+        //Creation of a plane
+        this.face = BABYLON.Mesh.CreatePlane("face" + name, 1.6, parent._scene);
+        //plane.rotation.x = Math.PI / 2;
+        this.face.material = materialPlane;
+        this.face.position.x = x;
+        this.face.position.y = y;
+        this.face.position.z = z;
+        this.face.parent = parent;
+        this.face.metadata = this;
+
+
+        this.sphere = BABYLON.Mesh.CreateSphere("ball" + name, 16, diameter, parent._scene);
+        this.sphere.parent = this.face; //parent;
         this.sphere.metadata = this;
 
-    // TODO : use same material??
-        var shapeMaterial = new BABYLON.StandardMaterial("mat", scene);
-        shapeMaterial.backFaceCulling = true;
-        shapeMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/TropicalSunnyDay/TropicalSunnyDay", scene);
-        shapeMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.CUBIC_MODE;
-        shapeMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-        shapeMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-        this.sphere.material = shapeMaterial;	
+        // TODO : use same material??
+        this.material = new BABYLON.StandardMaterial("mat", parent._scene);
+        // shapeMaterial.backFaceCulling = true;
+        this.material.reflectionTexture = new BABYLON.CubeTexture("textures/TropicalSunnyDay/TropicalSunnyDay", parent._scene);
+        // shapeMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.CUBIC_MODE;
+        this.material.diffuseColor = new BABYLON.Color3(0, 0, 0);
+        this.material.specularColor = new BABYLON.Color3(0, 0, 0);
+        //this.material.emissiveColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+        this.material.alpha = 0.2;
+        this.material.specularPower = 16;
+
+        this.sphere.material = this.material;
+
+        // Fresnel
+        this.material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
+        this.material.reflectionFresnelParameters.bias = 0.1;
+
+        /* this.material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
+         this.material.emissiveFresnelParameters.bias = 0.6;
+         this.material.emissiveFresnelParameters.power = 4;
+         this.material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
+         this.material.emissiveFresnelParameters.rightColor = BABYLON.Color3.Black();
+         */
+        this.material.opacityFresnelParameters = new BABYLON.FresnelParameters();
+        this.material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
+        this.material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
 
 
         this.sphere.actionManager = new BABYLON.ActionManager(this.sphere._scene);
-	    this.sphere.actionManager.registerAction(
+        this.sphere.actionManager.registerAction(
             new BABYLON.ExecuteCodeAction(
-                BABYLON.ActionManager.OnPickTrigger, function(sender) {
-                    console.log(sender.source.name);
+                BABYLON.ActionManager.OnPickTrigger, function (sender) {
+                    //console.log(sender.source.name);
 
-                    sender.source.metadata.userClicked();   
+                    sender.source.metadata.userClicked();
                 }
             )
         );
     }
 
-    deSelect()
-    {
+
+    deSelect() {
         this.isEnabled = false;
-        
-        if (this.highlight){
+
+        if (this.highlight) {
             this.highlight.dispose();
         }
+
+        this.sphere.disableEdgesRendering();
     }
 
-    select(){
-        this.sphere.parent.deselectAll();
+    select() {
+        this.face.parent.deselectAll();
 
-        this.highlight = new BABYLON.HighlightLayer("hl1", this.sphere._scene);
-        this.highlight.addMesh(this.sphere, BABYLON.Color3.Green()); 
+        // not working with opacity
+        //this.highlight = new BABYLON.HighlightLayer("hl1", this.sphere._scene);
+        //this.highlight.addMesh(this.sphere, BABYLON.Color3.Green()); 
+
+
+        this.sphere.enableEdgesRendering();
+        this.sphere.edgesColor = new BABYLON.Color4(0, 1, 1, 1)
+        this.sphere.edgesWidth = 13.0;
+
+        var animationBox = new BABYLON.Animation("myAnimation", "scaling.x", 30,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+        var keys = [];
+
+        keys.push({
+            frame: 0,
+            value: 1
+        });
+
+        keys.push({
+            frame: 10,
+            value: 0.5,
+        });
+
+        keys.push({
+            frame: 30,
+            value: 1
+        });
+
+        animationBox.setKeys(keys);
+
+        this.face.animations = [];
+        this.face.animations.push(animationBox);
+
+        scene.beginAnimation(this.face, 0, 30, true);
+
     }
 
-    userClicked(){
-        if (this.isEnabled)
-        {
+    userClicked() {
+        if (this.isEnabled) {
             return;
         }
-        
-        this.isEnabled = true;
-        console.log(this.isEnabled);
 
-        this.select(); 
+        this.isEnabled = true;
+        //console.log(this.isEnabled);
+
+        this.select();
     }
 }
