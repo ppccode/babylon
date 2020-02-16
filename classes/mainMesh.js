@@ -18,6 +18,22 @@ class MainMesh extends BABYLON.Mesh{
         skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
         skybox.material = skyboxMaterial;
 
+
+        var ballArray = [];
+
+        var boxWidth = 100;
+        var ballCount = 250;
+
+        for (var i=0; i < ballCount; i++)
+        {
+            var x = (Math.random() * boxWidth) -(boxWidth * 0.5); 
+            var y = (Math.random() * boxWidth) -(boxWidth * 0.5); 
+            var z = (Math.random() * boxWidth) -(boxWidth * 0.5); 
+
+            var ball = new Ball(this, 2, "ball" + i, x, y, z);
+            ballArray.push(ball);
+        }
+
     }
 
     cameraChanged(camera){

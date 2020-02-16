@@ -19,9 +19,6 @@ var createScene = function (engine) {
 
 	var dummyMain = new MainMesh(scene);
 
-	var ball = new Ball(dummyMain, 2, "sphere1", 2, 2, 0);
-	var ball2 = new Ball(dummyMain, 2, "sphere2", -2, 2, 0);
-	var ball3 = new Ball(dummyMain, 2, "sphere3", 0, 0, 0);
 
 	camera.onViewMatrixChangedObservable.add(function() {
 		dummyMain.cameraChanged(camera);

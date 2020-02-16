@@ -104,32 +104,39 @@ class Ball {
         this.sphere.edgesColor = new BABYLON.Color4(0, 1, 1, 1)
         this.sphere.edgesWidth = 13.0;
 
-        var animationBox = new BABYLON.Animation("myAnimation", "scaling.x", 30,
-            BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        
+        var animationBox = new BABYLON.Animation("myAnimation", "scaling", 10,
+            BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
 
         var keys = [];
 
         keys.push({
             frame: 0,
-            value: 1
+            value: new BABYLON.Vector3(1, 1, 1)
+        });
+
+        keys.push({
+            frame: 5,
+            value: new BABYLON.Vector3(0.9, 0.9, 0.9)
         });
 
         keys.push({
             frame: 10,
-            value: 0.5,
-        });
-
-        keys.push({
-            frame: 30,
-            value: 1
+            value: new BABYLON.Vector3(1, 1, 1)
         });
 
         animationBox.setKeys(keys);
 
+
+        var easingFunction = new BABYLON.QuadraticEase();
+        easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+        // Adding the easing function to the animation
+        animationBox.setEasingFunction(easingFunction);
+
         this.face.animations = [];
         this.face.animations.push(animationBox);
 
-        scene.beginAnimation(this.face, 0, 30, true);
+        scene.beginAnimation(this.face, 0, 20, false, 4);
 
     }
 
