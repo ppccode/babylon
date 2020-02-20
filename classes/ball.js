@@ -41,10 +41,9 @@ class Ball {
         this.sphere.parent = this.face; //parent;
         this.sphere.metadata = this;
 
-        // TODO : use same material??
         this.material = new BABYLON.StandardMaterial("mat", parent._scene);
         // shapeMaterial.backFaceCulling = true;
-        this.material.reflectionTexture = new BABYLON.CubeTexture("textures/TropicalSunnyDay/TropicalSunnyDay", parent._scene);
+        this.material.reflectionTexture = parent.skyboxTexture; 
         // shapeMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.CUBIC_MODE;
         this.material.diffuseColor = new BABYLON.Color3(0, 0, 0);
         this.material.specularColor = new BABYLON.Color3(0, 0, 0);
@@ -79,6 +78,7 @@ class Ball {
                 }
             )
         );
+        
     }
 
 
@@ -103,7 +103,6 @@ class Ball {
         this.sphere.enableEdgesRendering();
         this.sphere.edgesColor = new BABYLON.Color4(0, 1, 1, 1)
         this.sphere.edgesWidth = 13.0;
-
         
         var animationBox = new BABYLON.Animation("myAnimation", "scaling", 10,
             BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
