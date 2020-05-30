@@ -1,94 +1,119 @@
 
 
-
-class Disk {
-    diameter;
-    name;
-    isEnabled;
+class Disk extends BABYLON.Mesh {
     highlight;
     face;
-    material;
+    isSelected;
 
-    constructor(parent, diameter, name, x, y, z) {
+    constructor(parent, name, position) {
+        // construct Mesh
+        super(name, scene, parent);
 
-        this.diameter = diameter;
-        this.name = name;
-        this.isEnabled = false;
+        this.setPositionWithLocalVector(position);
+        this.parent = parent;
 
          // create face
-         var materialPlane = new BABYLON.StandardMaterial("", parent._scene);
-         materialPlane.diffuseTexture = new BABYLON.Texture("textures/obama-face-png-3.png", parent._scene);
-         materialPlane.backFaceCulling = false;//Allways show the front and the back of an element
+         var material = new BABYLON.StandardMaterial();
+         material.diffuseTexture = new BABYLON.Texture("textures/obama-face-png-3.png");
+         material.backFaceCulling = false;//Allways show the front and the back of an element
 
- 
-         //Creation of a plane
-         //this.face = BABYLON.Mesh.CreatePlane("face" + name, 1.6, parent._scene);
-         //plane.rotation.x = Math.PI / 2;
+         //Creation of a disk
+        this.face = BABYLON.MeshBuilder.CreateDisc(name + "face", {
+            radius: 1, arc: 1, tessellation: 40
+        }, scene);
 
-         //Creation of a plane
-        this.face = BABYLON.MeshBuilder.CreateDisc("face" + name, {
-            radius: 1, arc: 1, tessellation: 40, wAng: 45
-        }, parent._scene);
-
-         this.face.material = materialPlane;
-         this.face.position.x = x;
-         this.face.position.y = y;
-         this.face.position.z = z;
-         this.face.addRotation(0,Math.PI,Math.PI);
-         this.face.parent = parent;
-         this.face.metadata = this;
-
+        this.face.material = material;
+        this.face.addRotation(0,Math.PI,Math.PI);
+        this.face.parent = this;
+        this.face.metadata = this;
 
         this.face.actionManager = new BABYLON.ActionManager(parent._scene);
         this.face.actionManager.registerAction(
             new BABYLON.ExecuteCodeAction(
                 BABYLON.ActionManager.OnPickTrigger, function (sender) {
-                    //console.log(sender.source.name);
-
                     sender.source.metadata.userClicked();
                 }
             )
         );
-        
     }
 
-    createChildren()
+    userClicked() 
     {
-        for (var i=0;i<5;i++)
-        {
-            var ball = new Disk(this.face.parent, 2, "ball" , this.face.position.x, this.face.position.y, this.face.position.z);
-            ball.face.translate(new BABYLON.Vector3(i,0,i), 1, BABYLON.Space);
+        if (this.isSelected) {
+            return;
         }
+        this.select();
     }
-
-    deSelect() {
-        this.isEnabled = false;
-
-        if (this.highlight) {
-            this.highlight.dispose();
-        }
-
-        //this.sphere.disableEdgesRendering();
-    }
-
 
     select() {
-        this.face.parent.deselectAll();
-
+        this.deselectSiblings();
+        this.isSelected = true;
         // not working with opacity
-        this.highlight = new BABYLON.HighlightLayer("hl1", this.face.scene);
+        this.highlight = new BABYLON.HighlightLayer();
         this.highlight.addMesh(this.face, BABYLON.Color3.Green()); 
 
-
-       /* this.face.enableEdgesRendering();
+        /*this.face.enableEdgesRendering();
         this.face.edgesColor = new BABYLON.Color4(0, 1, 1, 1)
         this.face.edgesWidth = 13.0;
         */
 
        this.animate();
 
-       this.createChildren()
+       this.createChildren();
 
+       this.deSelect();
+
+       var animation = new BABYLON.Animation("cameraSwoop",	"position", 30,
+				BABYLON.Animation.ANIMATIONTYPE_VECTOR3)
+        var keyFrames = []
+        keyFrames.push({
+                            frame: 0,
+                            value: camera.position.clone()
+                        })
+        for(var i=1; i<=path.length; i++){
+                        var ap = path[i-1]
+                        keyFrames.push({
+                            frame: step*i,
+                            value: ap
+                        })
+                    }
+        animation.setKeys(keyFrames)
+        camera.animations = [animation]
+        animation = scene.beginAnimation(camera, 0, step*path.length, false, 1)
+    }
+
+    deSelect() {
+        this.isSelected = false;
+
+        if (this.highlight) {
+            this.highlight.dispose();
+        }
+        //this.face.disableEdgesRendering();
+    }
+
+    deselectSiblings()
+    {
+        var siblings = this.parent.getChildMeshes(true, m => m.name == "disk");
+        for (var i = 0; i < siblings.length; i++){
+            if (siblings[i].deSelect)	
+            {
+                siblings[i].deSelect(); 
+            }		 
+        }
+    }
+
+    createChildren()
+    {
+        for (var i=0;i<5;i++)
+        {
+            // get vectors 
+            var radians = (360 / 5) * (Math.PI / 180) * i;
+            var factor = 3;
+            var x = Math.cos(radians) * factor;
+            var y = Math.sin(radians) * factor; 
+
+            var ball = new Disk(this, "disk", new BABYLON.Vector3(x, y, factor));
+        }
     }
 
 
@@ -128,15 +153,5 @@ class Disk {
         scene.beginAnimation(this.face, 0, 20, false, 4);
     }
 
-    userClicked() 
-    {
-        if (this.isEnabled) {
-            return;
-        }
-
-        this.isEnabled = true;
-        //console.log(this.isEnabled);
-
-        this.select();
-    }
+    
 }
