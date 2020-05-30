@@ -2,24 +2,22 @@
 var baseUrl = "babylon/";
 
 var createScene = function (engine) {
-	var scene = new BABYLON.Scene(engine);
+	// Create the scene space
+    var scene = new BABYLON.Scene(engine);
 
-	//var camera = new BABYLON.ArcRotateCamera("Camera", 3 * Math.PI / 2, Math.PI / 2, 10, BABYLON.Vector3.Zero(), scene);
+    // Add a camera to the scene and attach it to the canvas
+    var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2, 4, BABYLON.Vector3.Zero(), scene);
+    camera.attachControl(canvas, true);
 
-	var camera = new BABYLON.FreeCamera("sceneCamera", new BABYLON.Vector3(0, 1, -15), scene);
-	camera.attachControl(canvas, true);
-	camera.keysUp.push(87);    //W
-    camera.keysDown.push(83)   //D
-    camera.keysLeft.push(65);  //A
-    camera.keysRight.push(68); //S
-
-	var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+    // Add lights to the scene
+    var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
+    var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
 
 	var dummyMain = new MenuMesh(scene);
 
 
 	camera.onViewMatrixChangedObservable.add(function() {
-		dummyMain.cameraChanged(camera);
+		//dummyMain.cameraChanged(camera);
 	});
 
 	scene.registerBeforeRender(function () {

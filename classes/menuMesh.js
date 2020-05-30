@@ -19,20 +19,7 @@ class MenuMesh extends BABYLON.Mesh{
         skybox.material = skyboxMaterial;
 
 
-        var ballArray = [];
-
-        var boxWidth = 100;
-        var ballCount = 250;
-
-        for (var i=0; i < ballCount; i++)
-        {
-            var x = (Math.random() * boxWidth) -(boxWidth * 0.5); 
-            var y = (Math.random() * boxWidth) -(boxWidth * 0.5); 
-            var z = (Math.random() * boxWidth) -(boxWidth * 0.5); 
-
-            var ball = new Disk(this, 2, "ball" + i, x, y, z);
-            ballArray.push(ball);
-        }
+        var ball = new Disk(this, 2, "ball" , 0, 0, 0);
 
     }
 
