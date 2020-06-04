@@ -7,7 +7,7 @@ class Disk extends BABYLON.Mesh {
 
     constructor(parent, name, position) {
         // construct Mesh
-        super(name, scene, parent);
+        super(name, scene, dummyMain);
 
         this.setPositionWithLocalVector(position);
         this.parent = parent;
@@ -23,7 +23,7 @@ class Disk extends BABYLON.Mesh {
         }, scene);
 
         this.face.material = material;
-        this.face.addRotation(0,Math.PI,Math.PI);
+        this.face.addRotation(0, Math.PI, Math.PI);
         this.face.parent = this;
         this.face.metadata = this;
 
@@ -47,39 +47,25 @@ class Disk extends BABYLON.Mesh {
 
     select() {
         this.deselectSiblings();
-        this.isSelected = true;
-        // not working with opacity
-        this.highlight = new BABYLON.HighlightLayer();
+        this.isSelected = true;   
+        this.highlight = new BABYLON.HighlightLayer(); // not working with opacity
         this.highlight.addMesh(this.face, BABYLON.Color3.Green()); 
 
-        /*this.face.enableEdgesRendering();
-        this.face.edgesColor = new BABYLON.Color4(0, 1, 1, 1)
-        this.face.edgesWidth = 13.0;
-        */
+        this.animate();
 
-       this.animate();
+        this.deSelect();
 
-       this.createChildren();
+    
+        var newPos = getGlobalPosition(this);
+        animateCameraTargetToPosition(camera, newPos, 10, null);
+        var newCameraPos = newPos.add(new BABYLON.Vector3(0, 0, -4));
+        animateCameraToPosition(camera, newCameraPos, 35, this.onMoveCameraToTargetFinish());
+        
+    }
 
-       this.deSelect();
-
-       var animation = new BABYLON.Animation("cameraSwoop",	"position", 30,
-				BABYLON.Animation.ANIMATIONTYPE_VECTOR3)
-        var keyFrames = []
-        keyFrames.push({
-                            frame: 0,
-                            value: camera.position.clone()
-                        })
-        for(var i=1; i<=path.length; i++){
-                        var ap = path[i-1]
-                        keyFrames.push({
-                            frame: step*i,
-                            value: ap
-                        })
-                    }
-        animation.setKeys(keyFrames)
-        camera.animations = [animation]
-        animation = scene.beginAnimation(camera, 0, step*path.length, false, 1)
+    onMoveCameraToTargetFinish(e){
+        console.log("targAnimEnded:");
+        this.createChildren();
     }
 
     deSelect() {
@@ -88,7 +74,6 @@ class Disk extends BABYLON.Mesh {
         if (this.highlight) {
             this.highlight.dispose();
         }
-        //this.face.disableEdgesRendering();
     }
 
     deselectSiblings()
@@ -104,16 +89,30 @@ class Disk extends BABYLON.Mesh {
 
     createChildren()
     {
-        for (var i=0;i<5;i++)
-        {
-            // get vectors 
-            var radians = (360 / 5) * (Math.PI / 180) * i;
-            var factor = 3;
-            var x = Math.cos(radians) * factor;
-            var y = Math.sin(radians) * factor; 
+        this.createChild(0, 5);
+    }
 
-            var ball = new Disk(this, "disk", new BABYLON.Vector3(x, y, factor));
-        }
+    createChild(count, max){
+        // get vectors 
+        var radians = (360 / 5) * (Math.PI / 180) * count;
+        var factor = 4;
+        var x = Math.cos(radians) * factor;
+        var y = Math.sin(radians) * factor; 
+
+        var ball = new Disk(this, "disk", new BABYLON.Vector3(x, y, factor*2));
+        var parent = this; 
+        var ease = new BABYLON.SineEase();
+        var aable2 = BABYLON.Animation.CreateAndStartAnimation('show', ball, 'position', 20, 10, 
+          ball.position.add(new BABYLON.Vector3(0, 0, 20)), ball.position, 0, ease, function(){
+            
+          });
+          
+        aable2.disposeOnEnd = true;
+        
+        if (count+1 < max)
+            {
+                parent.createChild(count+1, max);
+            }
     }
 
 

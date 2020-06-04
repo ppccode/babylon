@@ -2,6 +2,7 @@
 class MenuMesh extends BABYLON.Mesh{
     skyboxTexture;
     selectedDisk;
+    disk;
 
     constructor(scene){
         super("dummy", scene);
@@ -19,14 +20,15 @@ class MenuMesh extends BABYLON.Mesh{
         skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
         skybox.material = skyboxMaterial;
 
-        var disk = new Disk(this, "disk", new BABYLON.Vector3(0,0,0));
+        this.disk = new Disk(this, "disk", new BABYLON.Vector3(0,0,0));
+        this.disk.createChildren();
     }
 
     cameraChanged(camera){
         //text1.text = camera.rotation.x + "," + camera.rotation.y + "," + camera.rotation.z;
-        for (var i = 0; i < this._children.length; i++)
+        for (var i = 0; i < this.disk._children.length; i++)
         {
-            this._children[i].lookAt(camera.position);
+            //this.disk._children[i].lookAt(camera.position);
             //box.lookAt(sphere.position);
         }
     }
