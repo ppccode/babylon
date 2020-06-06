@@ -25,12 +25,10 @@ class MenuMesh extends BABYLON.Mesh{
     }
 
     cameraChanged(camera){
-        //text1.text = camera.rotation.x + "," + camera.rotation.y + "," + camera.rotation.z;
-        for (var i = 0; i < this.disk._children.length; i++)
-        {
-            //this.disk._children[i].lookAt(camera.position);
-            //box.lookAt(sphere.position);
-        }
+      //  this.disk.getChildMeshes(true, m => m.name == "disk").forEach(element => {
+      //      element.lookAt(camera.position);
+      //  });
+    
     }
 
 }

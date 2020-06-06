@@ -3,7 +3,10 @@
 class Disk extends BABYLON.Mesh {
     highlight;
     face;
+    plane;
     isSelected;
+    isExpanded;
+    label;
 
     constructor(parent, name, position) {
         // construct Mesh
@@ -35,37 +38,76 @@ class Disk extends BABYLON.Mesh {
                 }
             )
         );
+
+        // this plane will hold labels and controls
+        this.plane = BABYLON.Mesh.CreatePlane("plane", 2);
+        this.plane.parent = this;
+        this.plane.position = new BABYLON.Vector3(0, 0.5, -0.25);
+        this.plane.isPickable = false;
+
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(this.plane);
+
+        var rect1 = new BABYLON.GUI.Rectangle();
+        rect1.height = 0.15;
+        rect1.width = 1;
+        rect1.cornerRadius = 20;
+        rect1.thickness = 0;
+        rect1.background = "#00ff0088";
+
+        advancedTexture.addControl(rect1);
+        
+
+        var label = new BABYLON.GUI.TextBlock();
+        label.fontFamily = 'arial';
+        label.text = "Dit is een tekst !S";
+        label.height = 0.25;
+        label.width = 1;
+        label.color = 'white';
+        //label.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        label.fontSize = 100;
+
+        advancedTexture.addControl(label);
     }
 
     userClicked() 
     {
-        if (this.isSelected) {
-            return;
-        }
         this.select();
     }
 
+
+
     select() {
-        this.deselectSiblings();
-        this.isSelected = true;   
-        this.highlight = new BABYLON.HighlightLayer(); // not working with opacity
-        this.highlight.addMesh(this.face, BABYLON.Color3.Green()); 
+        this.bounceEffect();
 
-        this.animate();
-
-        this.deSelect();
-
-    
-        var newPos = getGlobalPosition(this);
-        animateCameraTargetToPosition(camera, newPos, 10, null);
-        var newCameraPos = newPos.add(new BABYLON.Vector3(0, 0, -4));
-        animateCameraToPosition(camera, newCameraPos, 35, this.onMoveCameraToTargetFinish());
+        if (this.isExpanded)
+        {
+            // return to parent
+            this.deleteChildren();
+            var newPos = getGlobalPosition(this.parent);
+            var newCameraPos = newPos.add(new BABYLON.Vector3(0, 0, -4));
+            animateCameraToPosition(camera, newCameraPos, 35, function(){
+                
+            });
+            animateCameraTargetToPosition(camera, newPos, 30, null);
+            return;
+        }
         
-    }
-
-    onMoveCameraToTargetFinish(e){
-        console.log("targAnimEnded:");
-        this.createChildren();
+        if (this.isSelected)
+        {
+            this.deSelect();
+            var newPos = getGlobalPosition(this);
+            animateCameraTargetToPosition(camera, newPos, 10, null);
+            var newCameraPos = newPos.add(new BABYLON.Vector3(0, 0, -4));
+            animateCameraToPosition(camera, newCameraPos, 35, null);
+            this.createChildren();
+        }
+        else
+        {
+            this.deselectSiblings(); 
+            this.isSelected = true;              
+            this.highlight = new BABYLON.HighlightLayer(); // not working with opacity
+            this.highlight.addMesh(this.face, BABYLON.Color3.Green()); 
+        }
     }
 
     deSelect() {
@@ -78,17 +120,29 @@ class Disk extends BABYLON.Mesh {
 
     deselectSiblings()
     {
-        var siblings = this.parent.getChildMeshes(true, m => m.name == "disk");
-        for (var i = 0; i < siblings.length; i++){
-            if (siblings[i].deSelect)	
+        this.parent.getChildMeshes(true, m => m.name == "disk").forEach(element => {
+            if (element.deSelect)	
             {
-                siblings[i].deSelect(); 
-            }		 
-        }
+                element.deSelect(); 
+            }
+        });
+    }
+
+    deleteChildren()
+    {
+        this.isExpanded = false;
+        this.getChildMeshes(true, m => m.name == "disk").forEach(element => {
+            // delete all child components
+            element.getChildren().forEach(c => {
+                c.dispose();
+            });
+            element.dispose();
+        });
     }
 
     createChildren()
     {
+        this.isExpanded = true;
         this.createChild(0, 5);
     }
 
@@ -110,13 +164,12 @@ class Disk extends BABYLON.Mesh {
         aable2.disposeOnEnd = true;
         
         if (count+1 < max)
-            {
-                parent.createChild(count+1, max);
-            }
+        {
+            parent.createChild(count+1, max);
+        }
     }
 
-
-    animate()
+    bounceEffect()
     {
         var animationBox = new BABYLON.Animation("myAnimation", "scaling", 10,
         BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);

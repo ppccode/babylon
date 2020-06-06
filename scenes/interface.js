@@ -1,6 +1,7 @@
 
 var camera;
 var dummyMain;
+var fullscreenUI;
 
 var getGlobalPosition = function(mesh){
 	mesh.computeWorldMatrix();
@@ -11,15 +12,14 @@ var getGlobalPosition = function(mesh){
 
 var animateCameraTargetToPosition = function(cam, newPos, frameCount, onFinish) {
 	var ease = new BABYLON.SineEase();
-	//ease.setEasingMode(BABYLON.EasingFunction.);
-
+	ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEIN);
 	var aable1 = BABYLON.Animation.CreateAndStartAnimation('at5', cam, 'target', 20, frameCount, cam.target, newPos, 0, ease, onFinish);
 	aable1.disposeOnEnd = true;
 }
 
 var animateCameraToPosition = function(cam, newPos, frameCount, onFinish) {
 	var ease = new BABYLON.SineEase();
-	//ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+	ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEIN);
 	var aable2 = BABYLON.Animation.CreateAndStartAnimation('at4', cam, 'position', 20, frameCount, cam.position, newPos, 0, ease, onFinish);
 	aable2.disposeOnEnd = true;
 }
@@ -37,6 +37,8 @@ var createScene = function (engine) {
     var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
     var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
 
+	//fullscreenUI = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
 	dummyMain = new MenuMesh(scene);
 
 
@@ -47,6 +49,7 @@ var createScene = function (engine) {
 	scene.registerBeforeRender(function () {
 		//box.S;
 	});
+	
 	
 
 	return scene;
