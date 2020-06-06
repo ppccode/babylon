@@ -52,7 +52,7 @@ class Disk extends BABYLON.Mesh {
         rect1.width = 1;
         rect1.cornerRadius = 20;
         rect1.thickness = 0;
-        rect1.background = "#00ff0088";
+        rect1.background = "#00ff0066";
 
         advancedTexture.addControl(rect1);
         
@@ -148,7 +148,9 @@ class Disk extends BABYLON.Mesh {
         // TODO: get data !
         var count = Math.floor(Math.random() * 8) + 2; // max 10
 
-        this.createChild(0, count);
+        setTimeout(() => {
+            this.createChild(0, count);
+        }, 500);
     }
 
     createChild(count, max){
@@ -157,14 +159,13 @@ class Disk extends BABYLON.Mesh {
         var factor = 4;
         var x = Math.cos(radians) * factor;
         var y = Math.sin(radians) * factor; 
+        var targetPosition = new BABYLON.Vector3(x, y, factor*2);
 
-        var ball = new Disk(this, "disk", new BABYLON.Vector3(x, y, factor*2));
+        var ball = new Disk(this, "disk", new BABYLON.Vector3.Zero);
         var parent = this; 
         var ease = new BABYLON.SineEase();
-        var aable2 = BABYLON.Animation.CreateAndStartAnimation('show' + count, ball, 'position', 20, 10, 
-          ball.position.add(new BABYLON.Vector3(0, 0, 20)), ball.position, 0, ease, function(){
-            
-          });
+        var aable2 = BABYLON.Animation.CreateAndStartAnimation('show' + count, ball, 'position', 10, 5, 
+            new BABYLON.Vector3(0,0,0), targetPosition, 0, ease, null);
           
         aable2.disposeOnEnd = true;
         
@@ -172,7 +173,7 @@ class Disk extends BABYLON.Mesh {
         {
             setTimeout(() => {
                 parent.createChild(count+1, max);
-            }, 100, parent, count, max);
+            }, 25, parent, count, max);
         }
     }
 
