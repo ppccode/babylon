@@ -98,8 +98,7 @@ class Disk extends BABYLON.Mesh {
             var newPos = getGlobalPosition(this);
             Animations.CameraTargetToPosition(camera, newPos, 10, null);
             var newCameraPos = newPos.add(new BABYLON.Vector3(0, 0, -4));
-            Animations.CameraToPosition(camera, newCameraPos, 35, null);
-            this.createChildren();
+            Animations.CameraToPosition(camera, newCameraPos, 35, this.createChildren());   
         }
         else
         {
@@ -109,6 +108,8 @@ class Disk extends BABYLON.Mesh {
             this.highlight.addMesh(this.face, BABYLON.Color3.Green()); 
         }
     }
+
+
 
     deSelect() {
         this.isSelected = false;
@@ -143,12 +144,16 @@ class Disk extends BABYLON.Mesh {
     createChildren()
     {
         this.isExpanded = true;
-        this.createChild(0, 5);
+
+        // TODO: get data !
+        var count = Math.floor(Math.random() * 8) + 2; // max 10
+
+        this.createChild(0, count);
     }
 
     createChild(count, max){
         // get vectors 
-        var radians = (360 / 5) * (Math.PI / 180) * count;
+        var radians = (360 / max) * (Math.PI / 180) * count;
         var factor = 4;
         var x = Math.cos(radians) * factor;
         var y = Math.sin(radians) * factor; 
@@ -156,7 +161,7 @@ class Disk extends BABYLON.Mesh {
         var ball = new Disk(this, "disk", new BABYLON.Vector3(x, y, factor*2));
         var parent = this; 
         var ease = new BABYLON.SineEase();
-        var aable2 = BABYLON.Animation.CreateAndStartAnimation('show', ball, 'position', 20, 10, 
+        var aable2 = BABYLON.Animation.CreateAndStartAnimation('show' + count, ball, 'position', 20, 10, 
           ball.position.add(new BABYLON.Vector3(0, 0, 20)), ball.position, 0, ease, function(){
             
           });
@@ -165,7 +170,9 @@ class Disk extends BABYLON.Mesh {
         
         if (count+1 < max)
         {
-            parent.createChild(count+1, max);
+            setTimeout(() => {
+                parent.createChild(count+1, max);
+            }, 100, parent, count, max);
         }
     }
 
