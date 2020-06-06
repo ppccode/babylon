@@ -10,20 +10,6 @@ var getGlobalPosition = function(mesh){
     return BABYLON.Vector3.TransformCoordinates(local_position, matrix);
 }
 
-var animateCameraTargetToPosition = function(cam, newPos, frameCount, onFinish) {
-	var ease = new BABYLON.SineEase();
-	ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEIN);
-	var aable1 = BABYLON.Animation.CreateAndStartAnimation('at5', cam, 'target', 20, frameCount, cam.target, newPos, 0, ease, onFinish);
-	aable1.disposeOnEnd = true;
-}
-
-var animateCameraToPosition = function(cam, newPos, frameCount, onFinish) {
-	var ease = new BABYLON.SineEase();
-	ease.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEIN);
-	var aable2 = BABYLON.Animation.CreateAndStartAnimation('at4', cam, 'position', 20, frameCount, cam.position, newPos, 0, ease, onFinish);
-	aable2.disposeOnEnd = true;
-}
-
 var createScene = function (engine) {
 	// Create the scene space
     var scene = new BABYLON.Scene(engine);

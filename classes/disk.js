@@ -84,11 +84,11 @@ class Disk extends BABYLON.Mesh {
             // return to parent
             this.deleteChildren();
             var newPos = getGlobalPosition(this.parent);
+            Animations.CameraTargetToPosition(camera, newPos, 20, null);
             var newCameraPos = newPos.add(new BABYLON.Vector3(0, 0, -4));
-            animateCameraToPosition(camera, newCameraPos, 35, function(){
+            Animations.CameraToPosition(camera, newCameraPos, 40, function(){
                 
             });
-            animateCameraTargetToPosition(camera, newPos, 30, null);
             return;
         }
         
@@ -96,9 +96,9 @@ class Disk extends BABYLON.Mesh {
         {
             this.deSelect();
             var newPos = getGlobalPosition(this);
-            animateCameraTargetToPosition(camera, newPos, 10, null);
+            Animations.CameraTargetToPosition(camera, newPos, 10, null);
             var newCameraPos = newPos.add(new BABYLON.Vector3(0, 0, -4));
-            animateCameraToPosition(camera, newCameraPos, 35, null);
+            Animations.CameraToPosition(camera, newCameraPos, 35, null);
             this.createChildren();
         }
         else
