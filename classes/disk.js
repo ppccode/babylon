@@ -59,7 +59,7 @@ class Disk extends BABYLON.Mesh {
 
         var label = new BABYLON.GUI.TextBlock();
         label.fontFamily = 'arial';
-        label.text = "Dit is een tekst !S";
+        label.text = "Dit is een tekst !";
         label.height = 0.25;
         label.width = 1;
         label.color = 'white';
@@ -165,7 +165,7 @@ class Disk extends BABYLON.Mesh {
         var parent = this; 
         var ease = new BABYLON.SineEase();
         var aable2 = BABYLON.Animation.CreateAndStartAnimation('show' + count, ball, 'position', 10, 5, 
-            new BABYLON.Vector3(0,0,0), targetPosition, 0, ease, null);
+            new BABYLON.Vector3(0,0,20), targetPosition, 0, ease, null);
           
         aable2.disposeOnEnd = true;
         
