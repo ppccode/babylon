@@ -9,6 +9,7 @@ class Ball {
     highlight;
     face;
     material;
+    label;
 
     constructor(parent, diameter, name, x, y, z, image) {
 
@@ -101,6 +102,7 @@ class Ball {
         //label.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         label.fontSize = 120;
 
+        this.label = label;
         
         advancedTexture.addControl(label);
 
@@ -118,6 +120,9 @@ class Ball {
         
     }
 
+    lookAtCamera(){
+        this.face.lookAt(this.face.position.multiply(new BABYLON.Vector3(2, 2, 2)).subtract(this.face._scene.activeCamera.position));
+    }
 
     deSelect() {
         this.isEnabled = false;

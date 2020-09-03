@@ -69,24 +69,17 @@ class MainMesh extends BABYLON.Mesh{
     }
 
     cameraChanged(){
-
-        for (var i = 0; i < this._children.length; i++)
+        for (var i = 0; i < this.ballArray.length; i++)
         {
-            var mesh = this._children[i]; 
-
-            /*var diff = camera.position.subtract(mesh.position);
-            var opposite = mesh.position.add(diff.scale(-1));
-            mesh.lookAt(opposite);
-            */
-            mesh.lookAt(mesh.position.multiply(new BABYLON.Vector3(2, 2, 2)).subtract(this._scene.activeCamera.position));
+            this.ballArray[i].lookAtCamera()
         }
     }
 
     deselectAll()
     {
-        for (var i = 0; i < this._children.length; i++)
+        for (var i = 0; i < this.ballArray.length; i++)
         {
-            this._children[i].metadata.deSelect();
+            this.ballArray[i].deSelect();
         }
     }
 
