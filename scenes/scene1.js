@@ -9,8 +9,8 @@ var createScene = function (engine) {
 	var scene = new BABYLON.Scene(engine);
 	scene.clearColor = new BABYLON.Color3(0.9, 0.9, 0.9);
 
-	var dummyMain = new MainMesh(scene);
-	//dummyMain.position.y += 2;
+	var mainMesh = new MainMesh(scene);
+	//mainMesh.position.y += 2;
 
 	// background sphere
 	//var bgSphere = new BABYLON.Mesh.CreateSphere("bgSphere", 16, 100, scene);
@@ -18,16 +18,16 @@ var createScene = function (engine) {
 	// Parameters: alpha, beta, radius, target position, scene
 	// alpha = longitude = y axis
 	// beta  = latitude  = z axis
-	//camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI/2,  Math.PI/2, 10, new BABYLON.Vector3(0, 0, 0), scene);
-	camera = new BABYLON.UniversalCamera(
-		"sceneCamera",
-		new BABYLON.Vector3(0, 0, -15),
-		scene
-	  );
+	camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI/2,  Math.PI/2, 20, new BABYLON.Vector3(0, 0, 0), scene);
+	//camera = new BABYLON.UniversalCamera("sceneCamera",new BABYLON.Vector3(0, 0, -15),scene);
 	camera.setTarget(new BABYLON.Vector3.Zero()) ;
-	camera.inputs.clear();
-    camera.attachControl(canvas, true);
+	//camera.lowerAlphaLimit = 1;  // y as
+	camera.lowerBetaLimit = 0.7;
+	camera.upperBetaLimit = 2.7;
 
+	//camera.inputs.clear();
+	camera.attachControl(canvas, true);
+	
 
 	// lights
 	var light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
@@ -37,10 +37,10 @@ var createScene = function (engine) {
 
 	camera.onViewMatrixChangedObservable.add(function(e) {
 		//console.log(e.position.y);
-		dummyMain.cameraChanged(e);
+		mainMesh.cameraChanged(e);
 	});
 
-	
+
 	/****************************Key Controls************************************************/
 
 	var map = {}; //object for multiple key presses
@@ -59,7 +59,7 @@ var createScene = function (engine) {
 	scene.registerBeforeRender( function(){
 
 		// wsad
-		if(map["a"] || map["A"]){
+		/*if(map["a"] || map["A"]){
 			dummyMain.rotateAxis(new BABYLON.Vector3(0, 1, 0));
 		}
 		if(map["d"] || map["D"]){
@@ -73,6 +73,9 @@ var createScene = function (engine) {
 		}
 
 		dummyMain.beforeRender();
+		*/
+
+		//console.log(camera.beta)
 	});
 	
 	
@@ -85,7 +88,7 @@ var createScene = function (engine) {
 
 	createAxis(10, null);
 
-	createAxis(5, dummyMain);
+	createAxis(5, mainMesh);
 
 	return scene;
 }

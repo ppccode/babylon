@@ -78,7 +78,7 @@ class MainMesh extends BABYLON.Mesh{
             var opposite = mesh.position.add(diff.scale(-1));
             mesh.lookAt(opposite);
             */
-           // mesh.lookAt(mesh.position.multiply(new BABYLON.Vector3(2, 2, 2)).subtract(this._scene.activeCamera.position));
+            mesh.lookAt(mesh.position.multiply(new BABYLON.Vector3(2, 2, 2)).subtract(this._scene.activeCamera.position));
         }
     }
 
