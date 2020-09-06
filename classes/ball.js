@@ -41,7 +41,7 @@ class Ball {
         this.face.position.x = x;
         this.face.position.y = y;
         this.face.position.z = z;
-        
+
         this.face.metadata = this;
 
         var labelFace = BABYLON.Mesh.CreatePlane ("labelFace" + name, 2, parent._scene);
@@ -134,8 +134,20 @@ class Ball {
        // this.face.disableEdgesRendering();
     }
 
+    fadeOut(){
+        Animations.FadeOut(this.face);
+        this.label.alpha = 0;
+    }
+
+    fadeIn(){
+        Animations.FadeIn(this.face);
+        this.label.alpha = 1;
+    }
+
     select() {
         this.face.parent.deselectAll();
+
+        scene.selectedBall = this;
 
         // not working with opacity
         this.highlight = new BABYLON.HighlightLayer("hl1", this.face._scene);
@@ -175,14 +187,19 @@ class Ball {
 
         scene.beginAnimation(this.face, 0, 20, false, 4);
 
-
-        Animations.CameraTargetToPosition(camera, this.face.position, 10, null);
+        
         var newCameraPos = this.face.position.add(new BABYLON.Vector3(0, 4, 0));
-        Animations.CameraToPosition(camera, newCameraPos, 35, function(){
-            // open new scene
-            
-        }); 
+        Animations.CameraTargetToPosition(scene.activeCamera, this.face.position, 10, function(){
+             
+        });
 
+        Animations.CameraToPosition(scene.activeCamera, newCameraPos, 30, function(){
+            // open new scene
+        });
+
+        this.face.parent.fadeAll(false);
+
+        scene.backButton.alpha =1;
     }
 
     userClicked() {

@@ -48,20 +48,8 @@ class MainMesh extends BABYLON.Mesh{
     }
 
     rotateAxis(vector){
-        this.rotationForceVector = this.rotationForceVector.add(vector);
-
-        this.rotateAround(BABYLON.Vector3.Zero(), this.rotationForceVector, 0.1);
-
-        // _rotationQuaternion is set after key input and makes rotation null
-        if (this._rotationQuaternion != null)
-        {
-            for (var i = 0; i < this.ballArray.length; i++)
-            {
-                this.ballArray[i].face._rotationQuaternion = this._rotationQuaternion;
-            }
-        }
-
-        this.cameraChanged();
+        //this.rotationForceVector = this.rotationForceVector.add(vector);
+        //this.rotateAround(BABYLON.Vector3.Zero(), this.rotationForceVector, 0.1);
     }
 
     beforeRender(){
@@ -81,6 +69,37 @@ class MainMesh extends BABYLON.Mesh{
         {
             this.ballArray[i].deSelect();
         }
+    }
+
+    fadeAll(inOut)
+    {
+        for (var i = 0; i < this.ballArray.length; i++)
+        {
+            if (this.ballArray[i] != scene.selectedBall)
+            {
+                if (inOut){
+                    this.ballArray[i].fadeIn();
+                }
+                else
+                {
+                    this.ballArray[i].fadeOut();
+                }
+            }
+        }
+    }
+
+    zoomBack()
+    {
+        this.deselectAll();
+
+        this.fadeAll(true);
+
+        scene.backButton.alpha = 0;
+
+        Animations.CameraTargetToPosition(scene.activeCamera, this.position, 10, null);
+        Animations.CameraToStartPosition(scene.activeCamera, 20, 10, function(){
+            // open new scene
+        }); 
     }
 
 }

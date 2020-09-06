@@ -2,12 +2,16 @@
 
 
 /******* Add the create scene function ******/
-var camera;
+var scene;
 
 var createScene = function (engine) {
 
-	var scene = new BABYLON.Scene(engine);
+	scene = new MainScene(engine);
 	scene.clearColor = new BABYLON.Color3(0.9, 0.9, 0.9);
+
+	scene.cameraAlpha = -Math.PI/2;
+	scene.cameraBeta = Math.PI/2;
+	scene.cameraRadius = 20;
 
 	var mainMesh = new MainMesh(scene);
 	//mainMesh.position.y += 2;
@@ -18,7 +22,7 @@ var createScene = function (engine) {
 	// Parameters: alpha, beta, radius, target position, scene
 	// alpha = longitude = y axis
 	// beta  = latitude  = z axis
-	camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI/2,  Math.PI/2, 20, new BABYLON.Vector3(0, 0, 0), scene);
+	var camera = new BABYLON.ArcRotateCamera("Camera", scene.cameraAlpha,  scene.cameraBeta, scene.cameraRadius, new BABYLON.Vector3(0, 0, 0), scene);
 	//camera = new BABYLON.UniversalCamera("sceneCamera",new BABYLON.Vector3(0, 0, -15),scene);
 	camera.setTarget(new BABYLON.Vector3.Zero()) ;
 	//camera.lowerAlphaLimit = 1;  // y as
@@ -27,7 +31,7 @@ var createScene = function (engine) {
 
 	//camera.inputs.clear();
 	camera.attachControl(canvas, true);
-	
+	scene.cameraPosition = camera.position;
 
 	// lights
 	var light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
@@ -39,6 +43,33 @@ var createScene = function (engine) {
 		//console.log(e.position.y);
 		mainMesh.cameraChanged(e);
 	});
+
+
+	// GUI
+    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    var panel = new BABYLON.GUI.StackPanel();    
+	 
+	panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+	panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+	panel.width = "160px";
+    panel.top = "30px"; 
+
+    var button = BABYLON.GUI.Button.CreateSimpleButton("backButton", "Back");
+    button.width = "100px";
+    button.height = "40px";
+	button.color = "white";
+	button.cornerRadius = 20;
+	button.background = "green";
+    button.onPointerDownObservable.add(function() {
+		mainMesh.zoomBack();
+		button.alpha =0;
+	});
+	
+	scene.backButton = button;
+	scene.backButton.alpha = 0;
+
+	panel.addControl(button);  
+	advancedTexture.addControl(panel); 
 
 
 	/****************************Key Controls************************************************/
@@ -62,16 +93,6 @@ var createScene = function (engine) {
 		/*if(map["a"] || map["A"]){
 			dummyMain.rotateAxis(new BABYLON.Vector3(0, 1, 0));
 		}
-		if(map["d"] || map["D"]){
-			dummyMain.rotateAxis(new BABYLON.Vector3(0, -1, 0));
-		}
-		if(map["w"] || map["W"]){
-			dummyMain.rotateAxis(new BABYLON.Vector3(1, 0, 0));
-		}
-		if(map["s"] || map["S"]){
-			dummyMain.rotateAxis(new BABYLON.Vector3(-1, 0, 0));
-		}
-
 		dummyMain.beforeRender();
 		*/
 
@@ -83,8 +104,8 @@ var createScene = function (engine) {
 	var ease1 = new BABYLON.SineEase();
 	ease1.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
 
-	//BABYLON.Animation.CreateAndStartAnimation('at5', camera, 'radius', 20, 40, 25, 20, 0, ease1).disposeOnEnd = true;
-	//BABYLON.Animation.CreateAndStartAnimation('at6', camera, 'alpha', 20, 40, 3.0 * Math.PI / 2, 3.2 * Math.PI / 2, 0, ease1).disposeOnEnd = true;
+	BABYLON.Animation.CreateAndStartAnimation('at5', camera, 'radius', 20, 40, 25, 20, 0, ease1).disposeOnEnd = true;
+	BABYLON.Animation.CreateAndStartAnimation('at6', camera, 'alpha', 20, 40, 3.0 * Math.PI / 2, 3.2 * Math.PI / 2, 0, ease1).disposeOnEnd = true;
 
 	createAxis(10, null);
 
@@ -92,42 +113,3 @@ var createScene = function (engine) {
 
 	return scene;
 }
-
-function createAxis(size, parent) {
-    var makeTextPlane = function(text, color, size) {
-        var dynamicTexture = new BABYLON.DynamicTexture("DynamicTexture", 50, scene, true);
-        dynamicTexture.hasAlpha = true;
-        dynamicTexture.drawText(text, 5, 40, "bold 36px Arial", color , "transparent", true);
-        var plane = BABYLON.Mesh.CreatePlane("TextPlane", size, scene, true);
-        plane.material = new BABYLON.StandardMaterial("TextPlaneMaterial", scene);
-        plane.material.backFaceCulling = false;
-        plane.material.specularColor = new BABYLON.Color3(0, 0, 0);
-		plane.material.diffuseTexture = dynamicTexture;
-		plane.parent = parent;
-    return plane;
-     };
-    var axisX = BABYLON.Mesh.CreateLines("axisX", [ 
-      BABYLON.Vector3.Zero(), new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.95, 0.05 * size, 0), 
-      new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.95, -0.05 * size, 0)
-	  ], scene);
-	axisX.parent = parent;
-    axisX.color = new BABYLON.Color3(1, 0, 0);
-    var xChar = makeTextPlane("X", "red", size / 10);
-    xChar.position = new BABYLON.Vector3(0.9 * size, -0.05 * size, 0);
-    var axisY = BABYLON.Mesh.CreateLines("axisY", [
-        BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size, 0), new BABYLON.Vector3( -0.05 * size, size * 0.95, 0), 
-        new BABYLON.Vector3(0, size, 0), new BABYLON.Vector3( 0.05 * size, size * 0.95, 0)
-		], scene);
-	axisY.parent = parent;
-    axisY.color = new BABYLON.Color3(0, 1, 0);
-    var yChar = makeTextPlane("Y", "green", size / 10);
-    yChar.position = new BABYLON.Vector3(0, 0.9 * size, -0.05 * size);
-    var axisZ = BABYLON.Mesh.CreateLines("axisZ", [
-        BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0 , -0.05 * size, size * 0.95),
-        new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0, 0.05 * size, size * 0.95)
-		], scene);
-	axisZ.parent = parent;
-    axisZ.color = new BABYLON.Color3(0, 0, 1);
-    var zChar = makeTextPlane("Z", "blue", size / 10);
-    zChar.position = new BABYLON.Vector3(0, 0.05 * size, 0.9 * size);
-};
