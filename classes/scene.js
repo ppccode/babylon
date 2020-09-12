@@ -6,6 +6,7 @@ class MainScene extends BABYLON.Scene{
     cameraRadius;
     cameraPosition;
     selectedBall;
+    mainMesh;
     
     constructor(engine){
         super(engine);

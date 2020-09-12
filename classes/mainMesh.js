@@ -3,6 +3,7 @@ class MainMesh extends BABYLON.Mesh{
     skyboxTexture;
     rotationForceVector;
     ballArray;
+    ballArraySub;
 
     constructor(scene){
         super("dummy", scene);
@@ -24,11 +25,11 @@ class MainMesh extends BABYLON.Mesh{
         this.rotationForceVector = BABYLON.Vector3.Zero();
 
         this.ballArray = [];
+        
 
         var ballCount = 7;
         var offset =  3;
         var sphereRadius = 1;
-
         var names = ['August Macke', 'Franz Marc', 'Jawlensky', 'Julien Dinou', 'Otto Nebel', 'Paul Klee', 'Van Doesburg'];
 
         for (var i=1; i <= ballCount; i++)
@@ -44,6 +45,34 @@ class MainMesh extends BABYLON.Mesh{
             var imageName = 'Bol_' + name + '.jpg';
 
             this.ballArray.push(new Ball(this, 1, name, x, y, z, imageName));
+        }
+
+    }
+
+    openChildren(node)
+    {
+        //scene.activeCamera.parent = node;
+        //scene.activeCamera.setTarget(node);
+
+        var ballCount = 5;
+        var offset =  3;
+        var sphereRadius = 1;
+        var subNames = ['Small Work', 'Early Work', 'Late Work', 'Drawings', 'Main Body'];
+
+        // create sub children
+        for (var i=1; i <= ballCount; i++)
+        {
+            var phi = Math.acos(-1 + (2*i) / ballCount);
+            var theta = Math.sqrt( ballCount * Math.PI ) * phi;
+        
+            var x = (sphereRadius + offset) * Math.cos( theta ) * Math.sin( phi );
+            var y = (sphereRadius + offset) * Math.sin( theta ) * Math.sin( phi );
+            var z = (sphereRadius + offset) * Math.cos( phi );
+
+            var name = subNames[i-1];
+            var imageName = 'Bol_' + name + '.jpg';
+
+            this.ballArray.push(new Ball(node, 1, name, x, y, z, imageName));
         }
     }
 
@@ -90,14 +119,13 @@ class MainMesh extends BABYLON.Mesh{
 
     zoomBack()
     {
-        this.deselectAll();
+        console.log('zoomback');
 
+        this.deselectAll();
         this.fadeAll(true);
 
-        scene.backButton.alpha = 0;
-
-        Animations.CameraTargetToPosition(scene.activeCamera, this.position, 10, null);
-        Animations.CameraToStartPosition(scene.activeCamera, 20, 10, function(){
+        Animations.CameraTargetToPosition(scene.activeCamera, this, 20, null);
+        Animations.CameraToStartPosition(scene.activeCamera, 20, 20, function(){
             // open new scene
         }); 
     }

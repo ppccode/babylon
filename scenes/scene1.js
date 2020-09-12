@@ -13,7 +13,7 @@ var createScene = function (engine) {
 	scene.cameraBeta = Math.PI/2;
 	scene.cameraRadius = 20;
 
-	var mainMesh = new MainMesh(scene);
+	scene.mainMesh = new MainMesh(scene);
 	//mainMesh.position.y += 2;
 
 	// background sphere
@@ -41,18 +41,24 @@ var createScene = function (engine) {
 
 	camera.onViewMatrixChangedObservable.add(function(e) {
 		//console.log(e.position.y);
-		mainMesh.cameraChanged(e);
+		scene.mainMesh.cameraChanged(e);
 	});
 
 
 	// GUI
-    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-    var panel = new BABYLON.GUI.StackPanel();    
+    /*var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+	var panel = new BABYLON.GUI.StackPanel();    
+	//panel.background = "#333333";
 	 
-	panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-	panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-	panel.width = "160px";
-    panel.top = "30px"; 
+	//panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+	//panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    //panel.width = "160px";
+	//panel.top = "30px"; 
+	panel.height = 1;
+	panel.onPointerClickObservable.add(function() {
+		mainMesh.zoomBack();
+		//button.alpha =0;
+	});
 
     var button = BABYLON.GUI.Button.CreateSimpleButton("backButton", "Back");
     button.width = "100px";
@@ -70,7 +76,9 @@ var createScene = function (engine) {
 
 	panel.addControl(button);  
 	advancedTexture.addControl(panel); 
+*/
 
+	
 
 	/****************************Key Controls************************************************/
 
@@ -104,12 +112,12 @@ var createScene = function (engine) {
 	var ease1 = new BABYLON.SineEase();
 	ease1.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
 
-	BABYLON.Animation.CreateAndStartAnimation('at5', camera, 'radius', 20, 40, 25, 20, 0, ease1).disposeOnEnd = true;
-	BABYLON.Animation.CreateAndStartAnimation('at6', camera, 'alpha', 20, 40, 3.0 * Math.PI / 2, 3.2 * Math.PI / 2, 0, ease1).disposeOnEnd = true;
+	BABYLON.Animation.CreateAndStartAnimation('at5', camera, 'radius', 20, 30, 25, 20, 0, ease1).disposeOnEnd = true;
+	BABYLON.Animation.CreateAndStartAnimation('at6', camera, 'alpha', 20, 30, 3.0 * Math.PI / 2, 3.1 * Math.PI / 2, 0, ease1).disposeOnEnd = true;
 
-	createAxis(10, null);
+	//createAxis(10, null);
 
-	createAxis(5, mainMesh);
+	//createAxis(5, mainMesh);
 
 	return scene;
 }

@@ -1,11 +1,11 @@
 
 
 
-class Ball {
+class Ball extends BABYLON.Mesh{
     diameter;
     name;
     sphere;
-    isEnabled;
+    isSelected;
     highlight;
     face;
     material;
@@ -13,10 +13,12 @@ class Ball {
 
     constructor(parent, diameter, name, x, y, z, image) {
 
-        //this.parent = parent;
+        super("dummy", scene);
+
+        this.parent = parent;
         this.diameter = diameter;
         this.name = name;
-        this.isEnabled = false;
+        this.isSelected = false;
 
         var textureName = "Demo/Scene_1_2 [Bollen]/" + image;
 
@@ -35,17 +37,19 @@ class Ball {
         this.face = BABYLON.MeshBuilder.CreateDisc(name + "face", {
             radius: 1, arc: 1, tessellation: 40, sideOrientation: 3
         }, scene);
-        this.face.parent = parent;
+        this.face.parent = this;
         //this.face.rotation.y = Math.PI / 2;
         this.face.material = materialPlane;
-        this.face.position.x = x;
-        this.face.position.y = y;
-        this.face.position.z = z;
+        this.position.x = x;
+        this.position.y = y;
+        this.position.z = z;
 
-        this.face.metadata = this;
+        //this.face.metadata = this;
 
-        var labelFace = BABYLON.Mesh.CreatePlane ("labelFace" + name, 2, parent._scene);
-        labelFace.position.y = -1.2;
+        var labelFace = BABYLON.Mesh.CreatePlane("labelFace" + name, 2, parent._scene);
+        labelFace.position.y = -1.3;
+        labelFace.isPickable = false;
+
         labelFace.parent = this.face;
         
 
@@ -83,7 +87,6 @@ class Ball {
 */
 
         var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(labelFace);
-
         var rect1 = new BABYLON.GUI.Rectangle();
         rect1.height = 0.15;
         rect1.width = 1;
@@ -97,10 +100,10 @@ class Ball {
         label.fontFamily = 'arial';
         label.text = this.name;
         label.height = 0.3;
-        label.width = 2;
+        label.width = 4;
         label.color = 'black';
         //label.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        label.fontSize = 120;
+        label.fontSize = 150;
 
         this.label = label;
         
@@ -110,10 +113,8 @@ class Ball {
         this.face.actionManager = new BABYLON.ActionManager(this.face._scene);
         this.face.actionManager.registerAction(
             new BABYLON.ExecuteCodeAction(
-                BABYLON.ActionManager.OnPickTrigger, function (sender) {
-                    //console.log(sender.source.name);
-
-                    sender.source.metadata.userClicked();
+                BABYLON.ActionManager.OnPickDownTrigger, function (sender) {
+                    sender.source.parent.userClicked();
                 }
             )
         );
@@ -121,11 +122,13 @@ class Ball {
     }
 
     lookAtCamera(){
-        this.face.lookAt(this.face.position.multiply(new BABYLON.Vector3(2, 2, 2)).subtract(this.face._scene.activeCamera.position));
+        this.lookAt(this.position.multiply(new BABYLON.Vector3(2, 2, 2)).subtract(scene.activeCamera.position));
     }
 
     deSelect() {
-        this.isEnabled = false;
+        console.log('deSelect ' + this.name  + ' enabled ' + this.isSelected);
+
+        this.isSelected = false;
 
         if (this.highlight) {
             this.highlight.dispose();
@@ -145,7 +148,9 @@ class Ball {
     }
 
     select() {
-        this.face.parent.deselectAll();
+        this.isSelected = true;
+
+        console.log('select ' + this.name  + ' enabled ' + this.isSelected);
 
         scene.selectedBall = this;
 
@@ -154,62 +159,30 @@ class Ball {
         this.highlight.addMesh(this.face, BABYLON.Color3.Green());
 
         
-        var animationBox = new BABYLON.Animation("myAnimation", "scaling", 10,
-            BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        //Animations.BallSelect(this.face);
+        Animations.CameraTargetToPosition(scene.activeCamera, this, 10, null);
+        Animations.CameraToRadius(scene.activeCamera, 4, 10, null);
 
-        var keys = [];
+        this.parent.fadeAll(false);
 
-        keys.push({
-            frame: 0,
-            value: new BABYLON.Vector3(1, 1, 1)
-        });
+        setTimeout(() => {
+            //scene.mainMesh.openChildren(this);
+        }, 500);
 
-        keys.push({
-            frame: 5,
-            value: new BABYLON.Vector3(0.9, 0.9, 0.9)
-        });
-
-        keys.push({
-            frame: 10,
-            value: new BABYLON.Vector3(1, 1, 1)
-        });
-
-        animationBox.setKeys(keys);
-
-
-        var easingFunction = new BABYLON.QuadraticEase();
-        easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
-        // Adding the easing function to the animation
-        animationBox.setEasingFunction(easingFunction);
-
-        this.face.animations = [];
-        this.face.animations.push(animationBox);
-
-        scene.beginAnimation(this.face, 0, 20, false, 4);
-
-        
-        var newCameraPos = this.face.position.add(new BABYLON.Vector3(0, 4, 0));
-        Animations.CameraTargetToPosition(scene.activeCamera, this.face.position, 10, function(){
-             
-        });
-
-        Animations.CameraToPosition(scene.activeCamera, newCameraPos, 30, function(){
-            // open new scene
-        });
-
-        this.face.parent.fadeAll(false);
-
-        scene.backButton.alpha =1;
+        //scene.backButton.alpha =1;
     }
 
     userClicked() {
-        if (this.isEnabled) {
+        console.log('userClicked ' + this.name  + ' enabled ' + this.isSelected);
+        
+        if (this.isSelected){
+            this.isSelected = false;
+            this.parent.zoomBack();
             return;
-        }
+        }  
 
-        this.isEnabled = true;
         //console.log(this.isEnabled);
-
+        this.parent.deselectAll();
         this.select();
     }
 }
