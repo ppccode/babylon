@@ -7,8 +7,8 @@ var scene;
 var createScene = function (engine) {
 
 	scene = new MainScene(engine);
-	scene.clearColor = new BABYLON.Color3(0.9, 0.9, 0.9);
-
+	scene.clearColor = new BABYLON.Color3(9/255, 2/255, 35/255);// new BABYLON.Color3(0.9, 0.9, 0.9);
+	scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
 	scene.cameraAlpha = -Math.PI/2;
 	scene.cameraBeta = Math.PI/2;
 	scene.cameraRadius = 20;
@@ -35,7 +35,7 @@ var createScene = function (engine) {
 
 	// lights
 	var light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
-	light.groundColor = new BABYLON.Color3(0.4, 0.4, 0.5);
+	//light.groundColor = new BABYLON.Color3(0.4, 0.4, 0.5);
 	light.intensity = 1;
 	light.parent = camera;
 

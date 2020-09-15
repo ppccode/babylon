@@ -1,6 +1,5 @@
 
 
-
 class Ball extends BABYLON.Mesh{
     diameter;
     name;
@@ -13,7 +12,7 @@ class Ball extends BABYLON.Mesh{
     defaultPos;
     dimension;
 
-    constructor(parent, diameter, name, x, y, z, image, dimension) {
+    constructor(parent, diameter, name, x, y, z, image, dimension, startPos) {
 
         super("dummy", scene);
 
@@ -42,10 +41,10 @@ class Ball extends BABYLON.Mesh{
         this.face.parent = this;
         //this.face.rotation.y = Math.PI / 2;
         this.face.material = materialPlane;
-        this.position = this.defaultPos;
+        
         //this.face.metadata = this;
 
-        var labelFace = BABYLON.Mesh.CreatePlane("labelFace" + name, 2, parent._scene);
+        var labelFace = BABYLON.Mesh.CreatePlane("labelFace" + name, 2.5, parent._scene);
         labelFace.position.y = -1.3;
         labelFace.isPickable = false;
 
@@ -100,7 +99,7 @@ class Ball extends BABYLON.Mesh{
         label.text = this.name;
         label.height = 0.3;
         label.width = 4;
-        label.color = 'black';
+        label.color = 'white';
         //label.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         label.fontSize = 150;
 
@@ -118,7 +117,11 @@ class Ball extends BABYLON.Mesh{
             )
         );
 
-        this.face.alpha = 0;
+        this.scaling = new BABYLON.Vector3.Zero();
+        Animations.Scale(this, this.scaling, new BABYLON.Vector3(1,1,1), 20 );
+
+        this.position = startPos;
+        Animations.BallToPosition(this, this.defaultPos, 20);
     }
 
     lookAtCamera(){
@@ -159,9 +162,8 @@ class Ball extends BABYLON.Mesh{
 
         // not working with opacity
         this.highlight = new BABYLON.HighlightLayer("hl1", this.face._scene);
-        this.highlight.addMesh(this.face, BABYLON.Color3.Green());
+        this.highlight.addMesh(this.face, BABYLON.Color3.Yellow());
 
-        
         //Animations.BallSelect(this.face);
         Animations.CameraTargetToPosition(scene.activeCamera, this, 10, null);
         Animations.CameraToRadius(scene.activeCamera, 4, 10, null);
@@ -175,16 +177,16 @@ class Ball extends BABYLON.Mesh{
             //this.setPositionWithLocalVector(new BABYLON.Vector3(0, 0, 0));
             //scene.activeCamera.setTarget(this);
 
-            Animations.BallToPosition(scene.activeCamera, this, new BABYLON.Vector3(0, 0, 0), 9);
-            Animations.CameraTargetToPosition(scene.activeCamera, this.parent, 9, null); 
-            Animations.CameraToRadius(scene.activeCamera, 20, 9, null);
+            var frames = 20;
+
+            Animations.BallToPosition(this, new BABYLON.Vector3(0, 0, 0), frames);
+            Animations.CameraTargetToPosition(scene.activeCamera, this.parent, frames, null); 
+            Animations.CameraToRadius(scene.activeCamera, 14, frames, null);
             //Animations.CameraTargetToPosition(scene.activeCamera, this, 20, null);
 
-            scene.mainMesh.openChildren(this.parent);
+            scene.mainMesh.openChildren(this);
 
         }, 500);
-
-        //scene.backButton.alpha =1;
     }
 
     userClicked() {

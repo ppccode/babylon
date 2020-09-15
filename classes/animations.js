@@ -39,10 +39,18 @@ class Animations{
         anim.disposeOnEnd = true;
     }
 
-    static BallToPosition(cam, node, newPos, frames = 11){
+    static BallToPosition(node, newPos, frames = 11){
         var ease2 = new BABYLON.SineEase();
         ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-        var anim = BABYLON.Animation.CreateAndStartAnimation('at9', node, 'position', 20, frames, node.position, newPos, 0, ease2);
+        BABYLON.Animation.CreateAndStartAnimation('at9', node, 'position', 20, frames, node.position, 
+          newPos, 0, ease2).disposeOnEnd = true;
+    }
+
+    static Scale(node, start, end, frames = 11)
+    {
+        var ease2 = new BABYLON.SineEase();
+        ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+        var anim = BABYLON.Animation.CreateAndStartAnimation('at12', node, 'scaling', 20, frames, start, end, 0, ease2);
         anim.disposeOnEnd = true;
     }
 
