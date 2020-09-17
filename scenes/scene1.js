@@ -109,11 +109,7 @@ var createScene = function (engine) {
 	
 	
 	// startup animation
-	var ease1 = new BABYLON.SineEase();
-	ease1.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
-
-	BABYLON.Animation.CreateAndStartAnimation('at5', camera, 'radius', 20, 30, 25, 20, 0, ease1).disposeOnEnd = true;
-	BABYLON.Animation.CreateAndStartAnimation('at6', camera, 'alpha', 20, 30, 3.0 * Math.PI / 2, 3.1 * Math.PI / 2, 0, ease1).disposeOnEnd = true;
+	BABYLON.Animation.CreateAndStartAnimation('at6', camera, 'alpha', 20, 30, 3.0 * Math.PI / 2, 3.1 * Math.PI / 2, 0).disposeOnEnd = true;
 
 	//createAxis(10, null);
 

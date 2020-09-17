@@ -1,10 +1,10 @@
 
 class MainMesh extends BABYLON.Mesh{
-    skyboxTexture;
-    rotationForceVector;
-    ballArray;
-    ballArraySub;
-    dimension;
+  //  skyboxTexture;
+   // rotationForceVector;
+  //  ballArray;
+   // ballArraySub;
+    //dimension;
 
     constructor(scene){
         super("dummy", scene);
@@ -45,7 +45,7 @@ class MainMesh extends BABYLON.Mesh{
             var name = names[i-1];
             var imageName = 'Demo/Scene_1_2 [Bollen]/Bol_' + name + '.jpg';
 
-            this.ballArray.push(new Ball(this, 1, name, x, y, z, imageName, this.dimension, new BABYLON.Vector3.Zero()));
+            this.ballArray.push(new Ball(this, sphereRadius, name, x, y, z, imageName, this.dimension, new BABYLON.Vector3.Zero()));
         }
     }
 
@@ -54,8 +54,8 @@ class MainMesh extends BABYLON.Mesh{
         this.dimension +=1;
 
         var ballCount = 5;
-        var offset =  3;
-        var sphereRadius = 1;
+        var offset =  2;
+        var sphereRadius = 0.5;
         var subNames = ['Small Work', 'Early Work', 'Late Work', 'Drawings', 'Main Body'];
 
         // create sub children
@@ -70,18 +70,16 @@ class MainMesh extends BABYLON.Mesh{
 
             var name = subNames[i-1];
             var imageName = 'Demo/Scene_3_4 [Bollen]/Bol_' + name + '.jpg';
-            var newBall = new Ball(this, 1, name, x, y, z, imageName, this.dimension,
+            var childPos = node.position.add(new BABYLON.Vector3(x, y, z));
+
+            var newBall = new Ball(scene.mainMesh, sphereRadius, name, childPos.x, childPos.y, childPos.z, imageName, this.dimension,
                 //new BABYLON.Vector3.Zero() 
-                 node.position.add(new BABYLON.Vector3(x, y, z))
+                 node.position
                  );
 
             this.ballArray.push(newBall);
         }
-    }
 
-    rotateAxis(vector){
-        //this.rotationForceVector = this.rotationForceVector.add(vector);
-        //this.rotateAround(BABYLON.Vector3.Zero(), this.rotationForceVector, 0.1);
     }
 
     beforeRender(){
@@ -103,11 +101,6 @@ class MainMesh extends BABYLON.Mesh{
         }
     }
 
-    moveAllToPosition()
-    {
-
-    }
-
     fadeAll(inOut, dimension)
     {
         for (var i = 0; i < this.ballArray.length; i++)
@@ -120,6 +113,23 @@ class MainMesh extends BABYLON.Mesh{
                 else
                 {
                     this.ballArray[i].fadeOut();
+                }
+            }
+        }
+    }
+
+    scaleAll(inOut, dimension)
+    {
+        for (var i = 0; i < this.ballArray.length; i++)
+        {
+            if (this.ballArray[i] != scene.selectedBall && dimension == this.ballArray[i].dimension)
+            {
+                if (inOut){
+                    this.ballArray[i].scaleIn();
+                }
+                else
+                {
+                    this.ballArray[i].scaleOut();
                 }
             }
         }
@@ -143,20 +153,22 @@ class MainMesh extends BABYLON.Mesh{
         this.dimension -= 1;
         console.log('zoomback dimension ' + this.dimension );
 
-        Animations.BallToPosition(scene.selectedBall, scene.selectedBall.defaultPos);
-
         this.deselectAll();
-        this.fadeAll(true, this.dimension);
+        this.scaleAll(false, this.dimension +1);
         this.fadeAll(false, this.dimension +1);
+        
 
         setTimeout( () => {
-            this.deleteAll(this.dimension +1)    
-        }, 500);
+            this.fadeAll(true, this.dimension);
+            Animations.CameraTargetToPosition(scene.activeCamera, this, 20, null);
+        Animations.CameraToStartPosition(scene.activeCamera, 20, 20, null);
+        }, 200);
 
-        Animations.CameraTargetToPosition(scene.activeCamera, this, 20, null);
+        setTimeout( () => {
+            this.deleteAll(this.dimension +1);
+            
+        }, 1000);
 
-        Animations.CameraToStartPosition(scene.activeCamera, 20, 20, function(){
-            // open new scene
-        });
+        
     }
 }

@@ -1,16 +1,17 @@
 
 
 class Ball extends BABYLON.Mesh{
-    diameter;
-    name;
-    sphere;
-    isSelected;
-    highlight;
-    face;
-    material;
-    label;
-    defaultPos;
-    dimension;
+    //iameter;
+    //name;
+    //sphere;
+    //isSelected;
+    //highlight;
+    //face;
+    //material;
+    //label;
+    //defaultPos;
+    //startPos;
+    //dimension;
 
     constructor(parent, diameter, name, x, y, z, image, dimension, startPos) {
 
@@ -22,6 +23,7 @@ class Ball extends BABYLON.Mesh{
         this.isSelected = false;
         this.dimension = dimension;
         this.defaultPos = new BABYLON.Vector3(x, y, z);
+        this.startPos = startPos;
 
         // create face
         var materialPlane = new BABYLON.StandardMaterial("texturePlane", parent._scene);
@@ -36,16 +38,16 @@ class Ball extends BABYLON.Mesh{
         //Creation of a plane
         //this.face = BABYLON.Mesh.CreatePlane ("face" + name, 2, parent._scene);
         this.face = BABYLON.MeshBuilder.CreateDisc(name + "face", {
-            radius: 1, arc: 1, tessellation: 40, sideOrientation: 3
+            radius: diameter, arc: 1, tessellation: 40, sideOrientation: 3
         }, scene);
         this.face.parent = this;
         //this.face.rotation.y = Math.PI / 2;
         this.face.material = materialPlane;
-        
+        this.face.alpha = 0.9;
         //this.face.metadata = this;
 
-        var labelFace = BABYLON.Mesh.CreatePlane("labelFace" + name, 2.5, parent._scene);
-        labelFace.position.y = -1.3;
+        var labelFace = BABYLON.Mesh.CreatePlane("labelFace" + name, 2.5 * diameter, parent._scene);
+        labelFace.position.y = -1.3 * diameter;
         labelFace.isPickable = false;
 
         labelFace.parent = this.face;
@@ -118,10 +120,21 @@ class Ball extends BABYLON.Mesh{
         );
 
         this.scaling = new BABYLON.Vector3.Zero();
-        Animations.Scale(this, this.scaling, new BABYLON.Vector3(1,1,1), 20 );
-
         this.position = startPos;
-        Animations.BallToPosition(this, this.defaultPos, 20);
+
+        this.scaleIn();
+    }
+
+    scaleIn()
+    {
+        Animations.Scale(this, this.scaling, new BABYLON.Vector3(1,1,1), 15 );
+        Animations.BallToPosition(this, this.defaultPos, 15);
+    }
+
+    scaleOut()
+    {
+        Animations.Scale(this, this.scaling, new BABYLON.Vector3.Zero(), 15 );
+        Animations.BallToPosition(this, this.startPos, 15);
     }
 
     lookAtCamera(){
@@ -166,26 +179,18 @@ class Ball extends BABYLON.Mesh{
 
         //Animations.BallSelect(this.face);
         Animations.CameraTargetToPosition(scene.activeCamera, this, 10, null);
-        Animations.CameraToRadius(scene.activeCamera, 4, 10, null);
-        
+        Animations.CameraToRadius(scene.activeCamera, 7, 10, null);
 
+       // this.parent.moveAllToPosition(true, this.dimension);
+        
         this.parent.fadeAll(false, this.dimension);
 
+        scene.mainMesh.openChildren(this);
+
         setTimeout(() => {
-            
-            //scene.activeCamera.parent = this;
-            //this.setPositionWithLocalVector(new BABYLON.Vector3(0, 0, 0));
-            //scene.activeCamera.setTarget(this);
+            //BABYLON.Animation.CreateAndStartAnimation('at6', camera, 'alpha', 20, 30, 3.0 * Math.PI / 2, 3.1 * Math.PI / 2, 0).disposeOnEnd = true;
 
-            var frames = 20;
-
-            Animations.BallToPosition(this, new BABYLON.Vector3(0, 0, 0), frames);
-            Animations.CameraTargetToPosition(scene.activeCamera, this.parent, frames, null); 
-            Animations.CameraToRadius(scene.activeCamera, 14, frames, null);
-            //Animations.CameraTargetToPosition(scene.activeCamera, this, 20, null);
-
-            scene.mainMesh.openChildren(this);
-
+            //Animations.CameraToRadius(scene.activeCamera, 12, 10, null);
         }, 500);
     }
 

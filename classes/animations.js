@@ -58,7 +58,7 @@ class Animations{
     {
         var ease2 = new BABYLON.SineEase();
         ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-        var anim = BABYLON.Animation.CreateAndStartAnimation('at10', node.material, 'alpha', 20, 11, 0, 1, 0, ease2, 
+        var anim = BABYLON.Animation.CreateAndStartAnimation('at10', node.material, 'alpha', 20, 11, 0, 0.9, 0, ease2, 
             onEnd(node)
         );
         anim.disposeOnEnd = true;
