@@ -1,10 +1,9 @@
 class Animations{
 
     
-    static CameraTargetToPosition(cam, node, frameCount, onFinish)
+    static CameraTargetToPosition(cam, newPos, frameCount, onFinish)
     {
         scene.stopAnimation(cam);
-        var newPos = node.position;
         var ease1 = new BABYLON.SineEase();
         ease1.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
         var animationTarget = BABYLON.Animation.CreateAndStartAnimation('at5', cam, 'target', 20, frameCount, cam.target, newPos, 0, ease1, onFinish);
@@ -35,7 +34,7 @@ class Animations{
         anim.disposeOnEnd = true;
     }
 
-    static BallToPosition(node, newPos, frames = 11){
+    static BallToPosition(node, newPos, frames = 11 ){
         var ease2 = new BABYLON.SineEase();
         ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
         BABYLON.Animation.CreateAndStartAnimation('at9', node, 'position', 20, frames, node.position, 

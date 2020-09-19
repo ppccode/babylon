@@ -17,7 +17,8 @@ class Ball extends BABYLON.Mesh{
 
         super("dummy", scene);
 
-        this.parent = parent;
+        this.parent = scene.mainMesh;
+        this.ballParent = parent;
         this.diameter = diameter;
         this.name = name;
         this.isSelected = false;
@@ -125,14 +126,14 @@ class Ball extends BABYLON.Mesh{
 
     scaleIn()
     {
-        Animations.Scale(this, this.scaling, new BABYLON.Vector3(1,1,1), 15 );
-        Animations.BallToPosition(this, this.defaultPos, 15);
+        Animations.Scale(this, this.scaling, new BABYLON.Vector3(1,1,1), 20 );
+        Animations.BallToPosition(this, this.defaultPos, 20);
     }
 
     scaleOut()
     {
-        Animations.Scale(this, this.scaling, new BABYLON.Vector3.Zero(), 15 );
-        Animations.BallToPosition(this, this.startPos, 15);
+        Animations.Scale(this, this.scaling, new BABYLON.Vector3.Zero(), 20 );
+        Animations.BallToPosition(this, this.startPos, 20);
     }
 
     lookAtCamera(){
@@ -150,36 +151,40 @@ class Ball extends BABYLON.Mesh{
     }
 
     fadeOut(){
-        Animations.FadeOut(this.face, function(node){
-            //node.setEnabled(false);
-        });
+        Animations.FadeOut(this.face, function(sender){}, 10);
         this.label.alpha = 0;
     }
 
     fadeIn(){
         //this.setEnabled(true);
-        Animations.FadeIn(this.face, function(node){
-
-        });
+        Animations.FadeIn(this.face, function(sender){}, 20);
         this.label.alpha = 1;
     }
 
     select() {
         this.isSelected = true;
-
-        //console.log('select ' + this.name  + ' enabled ' + this.isSelected);
-
         scene.selectedBall = this;
 
         // not working with opacity
         this.highlight = new BABYLON.HighlightLayer("hl1", this.face._scene);
         this.highlight.addMesh(this.face, BABYLON.Color3.Yellow());
 
-        scene.mainMesh.createChildren(this);
-        Animations.CameraTargetToPosition(scene.activeCamera, this, 15, null);
-        Animations.CameraToRadius(scene.activeCamera, 7, 15, null);
+        if (this.dimension == 1)
+        {
+            scene.mainMesh.createChildren(this);
+            scene.mainMesh.expandAll(1, false);
+            scene.mainMesh.fadeAll(false, this.dimension);
+            Animations.CameraTargetToPosition(scene.activeCamera, this.defaultPos.multiplyByFloats(2,2,2), 15, null);
+            Animations.CameraToRadius(scene.activeCamera, 7, 15, null);
+        }
+    
+        if (this.dimension == 2)
+        {
+            Animations.CameraToRadius(scene.activeCamera, 1.1, 15, null);
+            scene.mainMesh.fadeAll(false, this.dimension);
+            this.ballParent.fadeOut();
+        }
         
-       scene.mainMesh.fadeAll(false, this.dimension);
     }
 
     userClicked() {
@@ -187,12 +192,12 @@ class Ball extends BABYLON.Mesh{
         
         if (this.isSelected){
             this.isSelected = false;
-            this.parent.zoomBack();
+            scene.mainMesh.zoomBack();
             return;
         }  
 
         //console.log(this.isEnabled);
-        this.parent.deselectAll();
+        scene.mainMesh.deselectAll(this.dimension);
         this.select();
     }
 }
