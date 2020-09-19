@@ -7,31 +7,31 @@ class Animations{
         var newPos = node.position;
         var ease1 = new BABYLON.SineEase();
         ease1.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-        var animationTarget = BABYLON.Animation.CreateAndStartAnimation('at5', cam, 'target', 20, frameCount, cam.target, newPos, 0, this.ease1, onFinish);
+        var animationTarget = BABYLON.Animation.CreateAndStartAnimation('at5', cam, 'target', 20, frameCount, cam.target, newPos, 0, ease1, onFinish);
         animationTarget.disposeOnEnd = true;
     }
 
     static CameraToPosition(cam, newPos, frameCount, onFinish) {
         var ease2 = new BABYLON.SineEase();
         ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEIN);
-        var animationCam = BABYLON.Animation.CreateAndStartAnimation('at4', cam, 'position', 20, frameCount, cam.position, newPos, 0, this.ease2, onFinish);
+        var animationCam = BABYLON.Animation.CreateAndStartAnimation('at4', cam, 'position', 20, frameCount, cam.position, newPos, 0, ease2, onFinish);
         animationCam.disposeOnEnd = true;
     }
 
     static CameraToRadius(cam, radius, frameCount, onFinish) {
         var ease2 = new BABYLON.SineEase();
         ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-        var animationCam = BABYLON.Animation.CreateAndStartAnimation('at1', cam, 'radius', 20, frameCount, cam.radius, radius, 0, this.ease2, onFinish);
+        var animationCam = BABYLON.Animation.CreateAndStartAnimation('at1', cam, 'radius', 20, frameCount, cam.radius, radius, 0, ease2, onFinish);
         animationCam.disposeOnEnd = true;
     }
 
     static CameraToStartPosition(cam, radius, frameCount, onFinish) {
         var ease2 = new BABYLON.SineEase();
         ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
-        var animationCam = BABYLON.Animation.CreateAndStartAnimation('at6', cam, 'radius', 20, frameCount, cam.radius, radius, 0, this.ease2, onFinish);
+        var animationCam = BABYLON.Animation.CreateAndStartAnimation('at6', cam, 'radius', 20, frameCount, cam.radius, radius, 0, ease2, onFinish);
         animationCam.disposeOnEnd = true;
 
-        var anim = BABYLON.Animation.CreateAndStartAnimation('at7', cam, 'beta', 20, frameCount, cam.beta, scene.cameraBeta, 0, this.ease2, null);
+        var anim = BABYLON.Animation.CreateAndStartAnimation('at7', cam, 'beta', 20, frameCount, cam.beta, scene.cameraBeta, 0, ease2, null);
         anim.disposeOnEnd = true;
     }
 
@@ -50,21 +50,21 @@ class Animations{
         anim.disposeOnEnd = true;
     }
 
-    static FadeIn(node, onEnd)
+    static FadeIn(node, onEnd, frames = 11)
     {
         var ease2 = new BABYLON.SineEase();
         ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-        var anim = BABYLON.Animation.CreateAndStartAnimation('at10', node.material, 'alpha', 20, 11, 0, 0.9, 0, ease2, 
+        var anim = BABYLON.Animation.CreateAndStartAnimation('at10', node.material, 'alpha', 20, frames, 0, 1, 0, ease2, 
             onEnd(node)
         );
         anim.disposeOnEnd = true;
     }
 
-    static FadeOut(node, onEnd)
+    static FadeOut(node, onEnd, frames = 11)
     {
         var ease2 = new BABYLON.SineEase();
         ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-        var anim = BABYLON.Animation.CreateAndStartAnimation('at11', node.material, 'alpha', 20, 11, 1, 0, 0, ease2, 
+        var anim = BABYLON.Animation.CreateAndStartAnimation('at11', node.material, 'alpha', 20, frames, 1, 0, 0, ease2, 
             onEnd(node)    
         );
         anim.disposeOnEnd = true;

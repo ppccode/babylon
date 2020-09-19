@@ -43,7 +43,7 @@ class Ball extends BABYLON.Mesh{
         this.face.parent = this;
         //this.face.rotation.y = Math.PI / 2;
         this.face.material = materialPlane;
-        this.face.alpha = 0.9;
+        //this.face.alpha = 0.9;
         //this.face.metadata = this;
 
         var labelFace = BABYLON.Mesh.CreatePlane("labelFace" + name, 2.5 * diameter, parent._scene);
@@ -121,8 +121,6 @@ class Ball extends BABYLON.Mesh{
 
         this.scaling = new BABYLON.Vector3.Zero();
         this.position = startPos;
-
-        this.scaleIn();
     }
 
     scaleIn()
@@ -177,21 +175,11 @@ class Ball extends BABYLON.Mesh{
         this.highlight = new BABYLON.HighlightLayer("hl1", this.face._scene);
         this.highlight.addMesh(this.face, BABYLON.Color3.Yellow());
 
-        //Animations.BallSelect(this.face);
-        Animations.CameraTargetToPosition(scene.activeCamera, this, 10, null);
-        Animations.CameraToRadius(scene.activeCamera, 7, 10, null);
-
-       // this.parent.moveAllToPosition(true, this.dimension);
+        scene.mainMesh.createChildren(this);
+        Animations.CameraTargetToPosition(scene.activeCamera, this, 15, null);
+        Animations.CameraToRadius(scene.activeCamera, 7, 15, null);
         
-        this.parent.fadeAll(false, this.dimension);
-
-        scene.mainMesh.openChildren(this);
-
-        setTimeout(() => {
-            //BABYLON.Animation.CreateAndStartAnimation('at6', camera, 'alpha', 20, 30, 3.0 * Math.PI / 2, 3.1 * Math.PI / 2, 0).disposeOnEnd = true;
-
-            //Animations.CameraToRadius(scene.activeCamera, 12, 10, null);
-        }, 500);
+       scene.mainMesh.fadeAll(false, this.dimension);
     }
 
     userClicked() {

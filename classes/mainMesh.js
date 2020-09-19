@@ -29,7 +29,7 @@ class MainMesh extends BABYLON.Mesh{
         this.dimension = 1;
 
         var ballCount = 7;
-        var offset =  3;
+        var offset =  2.5;
         var sphereRadius = 1;
         var names = ['August Macke', 'Franz Marc', 'Jawlensky', 'Julien Dinou', 'Otto Nebel', 'Paul Klee', 'Van Doesburg'];
 
@@ -44,13 +44,14 @@ class MainMesh extends BABYLON.Mesh{
 
             var name = names[i-1];
             var imageName = 'Demo/Scene_1_2 [Bollen]/Bol_' + name + '.jpg';
+            var newBall = new Ball(this, sphereRadius, name, x, y, z, imageName, this.dimension, new BABYLON.Vector3.Zero());
+            this.ballArray.push(newBall);
 
-            this.ballArray.push(new Ball(this, sphereRadius, name, x, y, z, imageName, this.dimension, new BABYLON.Vector3.Zero()));
+            newBall.scaleIn();
         }
     }
 
-    openChildren(node)
-    {
+    createChildren(node){
         this.dimension +=1;
 
         var ballCount = 5;
@@ -76,10 +77,30 @@ class MainMesh extends BABYLON.Mesh{
                 //new BABYLON.Vector3.Zero() 
                  node.position
                  );
-
+            //newBall.setEnabled(false);
             this.ballArray.push(newBall);
+
+            Animations.Scale(newBall,  BABYLON.Vector3.Zero(), new BABYLON.Vector3(1,1,1));
+            Animations.BallToPosition(newBall, childPos);
         }
 
+    }
+
+    openChildren(node)
+    {
+        for (var i = 0; i < this.ballArray.length; i++)
+        {
+            if (this.ballArray[i] != scene.selectedBall && dimension == this.ballArray[i].dimension)
+            {
+                if (inOut){
+                    this.ballArray[i].fadeIn();
+                }
+                else
+                {
+                    this.ballArray[i].fadeOut();
+                }
+            }
+        }
     }
 
     beforeRender(){
@@ -158,11 +179,9 @@ class MainMesh extends BABYLON.Mesh{
         this.fadeAll(false, this.dimension +1);
         
 
-        setTimeout( () => {
-            this.fadeAll(true, this.dimension);
-            Animations.CameraTargetToPosition(scene.activeCamera, this, 20, null);
+        this.fadeAll(true, this.dimension);
+        Animations.CameraTargetToPosition(scene.activeCamera, this, 20, null);
         Animations.CameraToStartPosition(scene.activeCamera, 20, 20, null);
-        }, 200);
 
         setTimeout( () => {
             this.deleteAll(this.dimension +1);
