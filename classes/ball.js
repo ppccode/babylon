@@ -1,21 +1,10 @@
 
 
 class Ball extends BABYLON.Mesh{
-    //iameter;
-    //name;
-    //sphere;
-    //isSelected;
-    //highlight;
-    //face;
-    //material;
-    //label;
-    //defaultPos;
-    //startPos;
-    //dimension;
 
     constructor(parent, diameter, name, x, y, z, image, dimension, startPos) {
 
-        super("dummy", scene);
+        super("ball", scene);
 
         this.parent = scene.mainMesh;
         this.ballParent = parent;
@@ -32,7 +21,7 @@ class Ball extends BABYLON.Mesh{
         materialPlane.diffuseTexture = texture;
        // materialPlane.opacityTexture = new BABYLON.Texture(textureName, parent._scene);
         materialPlane.emissiveTexture = texture;
-        //materialPlane.specularColor = new BABYLON.Color3(0, 0, 0);
+        materialPlane.specularColor = new BABYLON.Color3(0, 0, 0);
         //materialPlane.backFaceCulling = true;//Allways show the front and the back of an element
         //materialPlane.wa
 
@@ -141,10 +130,7 @@ class Ball extends BABYLON.Mesh{
     }
 
     deSelect() {
-        //console.log('deSelect ' + this.name  + ' enabled ' + this.isSelected);
-
         this.isSelected = false;
-
         if (this.highlight) {
             this.highlight.dispose();
         }
@@ -171,18 +157,30 @@ class Ball extends BABYLON.Mesh{
 
         if (this.dimension == 1)
         {
-            scene.mainMesh.createChildren(this);
-            scene.mainMesh.expandAll(1, false);
-            scene.mainMesh.fadeAll(false, this.dimension);
-            Animations.CameraTargetToPosition(scene.activeCamera, this.defaultPos.multiplyByFloats(2,2,2), 15, null);
+            Animations.CameraTargetToPosition(scene.activeCamera, 
+                 this.defaultPos.multiply(scene.mainMesh.explodeVector), 15, null);
             Animations.CameraToRadius(scene.activeCamera, 7, 15, null);
+            scene.mainMesh.fadeAll(false, this.dimension);
+            scene.mainMesh.expandAll(1, false); 
+
+            setTimeout(() => { 
+                scene.mainMesh.createChildren(this);
+             }, 1500/2);
         }
     
         if (this.dimension == 2)
-        {
+        { 
+            //Animations.CameraTargetToPosition(scene.activeCamera, 
+            //    this.position, 15, null);
             Animations.CameraToRadius(scene.activeCamera, 1.1, 15, null);
             scene.mainMesh.fadeAll(false, this.dimension);
             this.ballParent.fadeOut();
+            //this.fadeOut();
+
+            setTimeout(() => { 
+                scene.mainMesh.openArtwork(this.ballParent);
+                Animations.CameraToRadius(scene.activeCamera, 70, 15, null);
+            }, 1500/2);
         }
         
     }

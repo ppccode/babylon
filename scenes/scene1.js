@@ -6,7 +6,7 @@ var scene;
 
 var createScene = function (engine) {
 
-	scene = new MainScene(engine);
+	scene = new BABYLON.Scene(engine);
 	scene.clearColor = new BABYLON.Color3(9/255, 2/255, 35/255);// new BABYLON.Color3(0.9, 0.9, 0.9);
 	scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
 	scene.cameraAlpha = -Math.PI/2;
@@ -46,39 +46,39 @@ var createScene = function (engine) {
 
 
 	// GUI
-    /*var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-	var panel = new BABYLON.GUI.StackPanel();    
-	//panel.background = "#333333";
-	 
-	//panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-	//panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-    //panel.width = "160px";
-	//panel.top = "30px"; 
-	panel.height = 1;
-	panel.onPointerClickObservable.add(function() {
-		mainMesh.zoomBack();
-		//button.alpha =0;
-	});
+	var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+	
+	var panel = new BABYLON.GUI.StackPanel(); 
+	panel.paddingTop = "20px";   
+	panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+	panel.height = "60px";
 
-    var button = BABYLON.GUI.Button.CreateSimpleButton("backButton", "Back");
+	var button = BABYLON.GUI.Button.CreateSimpleButton("backButton", "Back");
     button.width = "100px";
-    button.height = "40px";
+	button.height = "40px";
+	button.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
 	button.color = "white";
 	button.cornerRadius = 20;
 	button.background = "green";
     button.onPointerDownObservable.add(function() {
-		mainMesh.zoomBack();
-		button.alpha =0;
+
 	});
-	
-	scene.backButton = button;
-	scene.backButton.alpha = 0;
 
-	panel.addControl(button);  
+	//panel.addControl(button);  
+
+	var bottomPanel = new BABYLON.GUI.StackPanel();	
+	bottomPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+	bottomPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+	bottomPanel.paddingBottom = "10px";
+	bottomPanel.height = "60px";
+	bottomPanel.width = "100px";
+	var logo = new BABYLON.GUI.Image("Galatea", "logo.png");
+	bottomPanel.addControl(logo);
+
+	
 	advancedTexture.addControl(panel); 
-*/
+	advancedTexture.addControl(bottomPanel); 
 
-	
 
 	/****************************Key Controls************************************************/
 
