@@ -61,17 +61,17 @@ var createScene = function (engine) {
 	button.cornerRadius = 20;
 	button.background = "green";
     button.onPointerDownObservable.add(function() {
-
+		scene.mainMesh.backClicked();
 	});
 
-	//panel.addControl(button);  
+	panel.addControl(button);  
 
 	var bottomPanel = new BABYLON.GUI.StackPanel();	
 	bottomPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
 	bottomPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
 	bottomPanel.paddingBottom = "10px";
 	bottomPanel.height = "60px";
-	bottomPanel.width = "100px";
+	bottomPanel.width = "200px";
 	var logo = new BABYLON.GUI.Image("Galatea", "logo.png");
 	bottomPanel.addControl(logo);
 

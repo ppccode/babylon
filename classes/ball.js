@@ -115,13 +115,18 @@ class Ball extends BABYLON.Mesh{
 
     scaleIn()
     {
-        Animations.Scale(this, this.scaling, new BABYLON.Vector3(1,1,1), 20 );
+        this.scaleTo(1);
         Animations.BallToPosition(this, this.defaultPos, 20);
+    }
+
+    scaleTo(amount)
+    {
+        Animations.Scale(this, this.scaling, new BABYLON.Vector3(amount, amount, amount), 15 );
     }
 
     scaleOut()
     {
-        Animations.Scale(this, this.scaling, new BABYLON.Vector3.Zero(), 20 );
+        this.scaleTo(0);
         Animations.BallToPosition(this, this.startPos, 20);
     }
 
@@ -165,21 +170,19 @@ class Ball extends BABYLON.Mesh{
 
             setTimeout(() => { 
                 scene.mainMesh.createChildren(this);
+                this.scaleTo(0.5);
              }, 1500/2);
         }
     
         if (this.dimension == 2)
         { 
-            //Animations.CameraTargetToPosition(scene.activeCamera, 
-            //    this.position, 15, null);
             Animations.CameraToRadius(scene.activeCamera, 1.1, 15, null);
             scene.mainMesh.fadeAll(false, this.dimension);
             this.ballParent.fadeOut();
-            //this.fadeOut();
 
             setTimeout(() => { 
                 scene.mainMesh.openArtwork(this.ballParent);
-                Animations.CameraToRadius(scene.activeCamera, 70, 15, null);
+                Animations.CameraToRadius(scene.activeCamera, 30, 15, null);
             }, 1500/2);
         }
         

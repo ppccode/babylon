@@ -41,9 +41,10 @@ class Frame extends BABYLON.Mesh {
     }
 
     userClicked() {
-        Animations.CameraTargetToPosition(scene.activeCamera, 
-            this.defaultPos, 15, null);
+       Animations.CameraTargetToPosition(scene.activeCamera, this.defaultPos, 15, null);
        Animations.CameraToRadius(scene.activeCamera, 7, 15, null);
+
+       scene.mainMesh.dimension = 4;
     }
 
     lookAtCamera(){

@@ -25,7 +25,7 @@ class MainMesh extends BABYLON.Mesh{
         this.explodeVector = new BABYLON.Vector3(1.6, 1.6, 1.6);
 
         var ballCount = 7;
-        var offset =  2.5;
+        var offset =  2.8;
         var sphereRadius = 1;
         var names = ['August Macke', 'Franz Marc', 'Jawlensky', 'Julien Dinou', 'Otto Nebel', 'Paul Klee', 'Van Doesburg'];
 
@@ -51,7 +51,7 @@ class MainMesh extends BABYLON.Mesh{
         this.dimension +=1;
 
         var ballCount = 5;
-        var offset =  1.5;
+        var offset =  1;
         var sphereRadius = 0.5;
         var subNames = ['Small Work', 'Early Work', 'Late Work', 'Drawings', 'Main Body'];
 
@@ -102,7 +102,59 @@ class MainMesh extends BABYLON.Mesh{
 
              var newFrame = new Frame(node, sphereRadius, name, childPos, imageName, this.dimension, node.position );
              this.artArray.push(newFrame);
+
+             scene.render();
         }
+    }
+
+    backClicked()
+    {
+        if (this.dimension == 3)
+        {
+            for (var i=0; i < this.artArray.length; i++)
+            {
+                this.artArray[i].setEnabled(false);
+                this.artArray[i].dispose();
+                //this.artArray.splice(i, 1);
+
+                scene.render();
+            }
+
+            this.dimension -=1;
+            this.setEnabledAll(this.dimension, true);
+            this.setEnabledAll(this.dimension-1, true);
+            this.fadeAll(true, this.dimension);
+            Animations.CameraToRadius(scene.activeCamera, 7, 15, null);
+
+        }
+        if (this.dimension == 4)
+        {            
+            Animations.CameraTargetToPosition(scene.activeCamera, scene.selectedBall.position, 15, null);
+            Animations.CameraToRadius(scene.activeCamera, 70, 15, null);
+            this.dimension -=1;
+        }
+    }
+
+    zoomBack()
+    {
+        console.log('zoomback dimension ' + this.dimension );
+
+        scene.selectedBall.scaleTo(1);
+
+        this.deselectAll();
+        this.scaleAll(false, this.dimension);
+        this.fadeAll(false, this.dimension);
+
+        setTimeout(() => { 
+            this.dimension -= 1;
+
+            this.expandAll(1, true);
+            this.fadeAll(true, this.dimension);
+            Animations.CameraTargetToPosition(scene.activeCamera, this.position, 20, null);
+            Animations.CameraToStartPosition(scene.activeCamera, 20, 15, null);
+            this.deleteAll(this.dimension +1);
+
+        }, 1500/2);
     }
 
     expandAll(dimension, reverse)
@@ -213,23 +265,5 @@ class MainMesh extends BABYLON.Mesh{
         }
     }
 
-    zoomBack()
-    {
-        console.log('zoomback dimension ' + this.dimension );
-
-        this.deselectAll();
-        this.scaleAll(false, this.dimension);
-        this.fadeAll(false, this.dimension);
-
-        setTimeout(() => { 
-            this.dimension -= 1;
-
-            this.expandAll(1, true);
-            this.fadeAll(true, this.dimension);
-            Animations.CameraTargetToPosition(scene.activeCamera, this.position, 20, null);
-            Animations.CameraToStartPosition(scene.activeCamera, 20, 15, null);
-            this.deleteAll(this.dimension +1);
-
-        }, 1500/2);
-    }
+    
 }
