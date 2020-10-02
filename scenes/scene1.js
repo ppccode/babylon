@@ -49,13 +49,13 @@ var createScene = function (engine) {
 	var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 	
 	var panel = new BABYLON.GUI.StackPanel(); 
-	panel.paddingTop = "20px";   
+	panel.paddingTop = "0.1";   
 	panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-	panel.height = "60px";
+	panel.height = "0.5";
 
 	var button = BABYLON.GUI.Button.CreateSimpleButton("backButton", "Back");
-    button.width = "100px";
-	button.height = "40px";
+    button.width = "0.2";
+	button.height = "0.1";
 	button.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
 	button.color = "white";
 	button.cornerRadius = 20;

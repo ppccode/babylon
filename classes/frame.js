@@ -9,40 +9,61 @@ class Frame extends BABYLON.Mesh {
         this.diameter = diameter;
         this.name = name;
         this.isSelected = false;
+        this.image = image;
         this.dimension = dimension;
         this.defaultPos = position;
         this.startPos = startPos;
-        
-
-        //Creation of a repeated textured material
-        var materialPlane = new BABYLON.StandardMaterial("texturePlane", scene);
-        materialPlane.diffuseTexture = new BABYLON.Texture(image, scene);
-        materialPlane.emissiveTexture = materialPlane.diffuseTexture;
-        materialPlane.specularColor = new BABYLON.Color3(0, 0, 0);
-        materialPlane.backFaceCulling = false;//Allways show the front and the back of an element
-
-        //Creation of a plane
-        this.face = BABYLON.Mesh.CreatePlane("plane", diameter, scene);
-        //this.face.rotation.x = Math.PI / 2;
-        this.face.material = materialPlane;
-        this.face.parent = this;
-
         this.position = position;
 
-        this.face.actionManager = new BABYLON.ActionManager(scene);
-        this.face.actionManager.registerAction(
-            new BABYLON.ExecuteCodeAction(
-                BABYLON.ActionManager.OnPickDownTrigger, function (sender) {
-                    sender.source.parent.userClicked();
-                }
-            )
-        );
+        
+    }
 
+    load(num){
+        //Creation of a repeated textured material
+        var texture = new BABYLON.Texture(this.image, scene, false, false, BABYLON.Texture.NEAREST_SAMPLINGMODE, ()=>{
+            // texture is loaded
+            var materialPlane = new BABYLON.StandardMaterial("texturePlane", scene);
+            materialPlane.diffuseTexture = texture;
+            materialPlane.emissiveTexture = texture;
+            materialPlane.specularColor = new BABYLON.Color3(0, 0, 0);
+            materialPlane.backFaceCulling = false;//Allways show the front and the back of an element
+            
+            
+            var sizearray = texture.getSize();
+            var divideFac = 130;
+
+            //Creation of a plane
+            this.face = BABYLON.Mesh.CreateGround("plane", sizearray.width/divideFac, sizearray.height/divideFac, 1, scene);
+            this.face.rotation.x = Math.PI / 2;
+            this.face.material = materialPlane;
+            this.face.parent = this;
+
+            this.face.actionManager = new BABYLON.ActionManager(scene);
+            this.face.actionManager.registerAction(
+                new BABYLON.ExecuteCodeAction(
+                    BABYLON.ActionManager.OnPickTrigger, function (sender) {
+                        sender.source.parent.userClicked();
+                    }
+                )
+            );
+
+            
+
+            scene.render();
+
+            // load next
+            num += 1;
+            if (num < scene.mainMesh.artArray.length)
+            {
+                scene.mainMesh.artArray[num].load(num);      
+            }        
+            
+        } );
     }
 
     userClicked() {
        Animations.CameraTargetToPosition(scene.activeCamera, this.defaultPos, 15, null);
-       Animations.CameraToRadius(scene.activeCamera, 7, 15, null);
+       Animations.CameraToRadius(scene.activeCamera, 10, 15, null);
 
        scene.mainMesh.dimension = 4;
     }

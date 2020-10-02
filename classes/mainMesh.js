@@ -84,7 +84,7 @@ class MainMesh extends BABYLON.Mesh{
 
         this.dimension +=1;
         var ballCount = demoData.length;
-        var offset =  10;
+        var offset =  14;
         var sphereRadius = 4;
 
         for (var i=0; i < ballCount; i++)
@@ -102,9 +102,9 @@ class MainMesh extends BABYLON.Mesh{
 
              var newFrame = new Frame(node, sphereRadius, name, childPos, imageName, this.dimension, node.position );
              this.artArray.push(newFrame);
-
-             scene.render();
         }
+
+        this.artArray[0].load(0);
     }
 
     backClicked()
@@ -130,7 +130,7 @@ class MainMesh extends BABYLON.Mesh{
         if (this.dimension == 4)
         {            
             Animations.CameraTargetToPosition(scene.activeCamera, scene.selectedBall.position, 15, null);
-            Animations.CameraToRadius(scene.activeCamera, 70, 15, null);
+            Animations.CameraToRadius(scene.activeCamera, 90, 15, null);
             this.dimension -=1;
         }
     }

@@ -182,7 +182,7 @@ class Ball extends BABYLON.Mesh{
 
             setTimeout(() => { 
                 scene.mainMesh.openArtwork(this.ballParent);
-                Animations.CameraToRadius(scene.activeCamera, 30, 15, null);
+                Animations.CameraToRadius(scene.activeCamera, 90, 15, null);
             }, 1500/2);
         }
         
@@ -190,6 +190,11 @@ class Ball extends BABYLON.Mesh{
 
     userClicked() {
         console.log('userClicked ' + this.name  + ' enabled ' + this.isSelected);
+
+        if (this.name != "Julien Dinou" && this.name != "Drawings")
+        {
+            return;
+        }
         
         if (this.isSelected){
             this.isSelected = false;
