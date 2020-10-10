@@ -178,18 +178,30 @@ class Ball extends BABYLON.Mesh{
         { 
             Animations.CameraToRadius(scene.activeCamera, 1.1, 15, null);
             scene.mainMesh.fadeAll(false, this.dimension);
-            this.ballParent.fadeOut();
+
+            if (this.ballParent.fadeOut)
+            {
+                this.ballParent.fadeOut();
+            }
+            
 
             setTimeout(() => { 
                 scene.mainMesh.openArtwork(this.ballParent);
                 Animations.CameraToRadius(scene.activeCamera, 90, 15, null);
+
+                var ease2 = new BABYLON.SineEase();
+        ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+	// startup animation
+	BABYLON.Animation.CreateAndStartAnimation('at6', scene.activeCamera, 'alpha', 20, 60, 2.0 * Math.PI / 2, 1.0 * Math.PI / 2, 0, ease2).disposeOnEnd = true;
+
+
             }, 1500/2);
         }
         
     }
 
     userClicked() {
-        console.log('userClicked ' + this.name  + ' enabled ' + this.isSelected);
+        console.log('userClicked ' + this.name  + ' isSelected ' + this.isSelected);
 
         if (this.name != "Julien Dinou" && this.name != "Drawings")
         {
@@ -197,9 +209,10 @@ class Ball extends BABYLON.Mesh{
         }
         
         if (this.isSelected){
-            this.isSelected = false;
-            scene.mainMesh.zoomBack();
-            return;
+        //this.isSelected = false;
+           //scene.mainMesh.zoomBack();
+           //return;
+           this.dimension += 1;
         }  
 
         //console.log(this.isEnabled);

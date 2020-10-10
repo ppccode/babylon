@@ -52,20 +52,19 @@ class MainMesh extends BABYLON.Mesh{
 
         var ballCount = 5;
         var offset =  1;
-        var sphereRadius = 0.5;
+        var sphereRadius = 0.3;
         var subNames = ['Small Work', 'Early Work', 'Late Work', 'Drawings', 'Main Body'];
 
         // create sub children
-        for (var i=1; i <= ballCount; i++)
+        for (var i=0; i < ballCount; i++)
         {
-            var phi = Math.acos(-1 + (2*i) / ballCount);
-            var theta = Math.sqrt( ballCount * Math.PI ) * phi;
-        
-            var x = (sphereRadius + offset) * Math.cos( theta ) * Math.sin( phi );
-            var y = (sphereRadius + offset) * Math.sin( theta ) * Math.sin( phi );
-            var z = (sphereRadius + offset) * Math.cos( phi );
+            var grad = ((360 / ballCount) * i)  +20; // small offset
+            var rad = grad * (Math.PI / 180);
+            var x = Math.cos(rad) * offset;
+            var y = Math.sin(rad) * offset;
+            var z = 0;
 
-            var name = subNames[i-1];
+            var name = subNames[i];
             var imageName = 'Demo/Scene_3_4 [Bollen]/Bol_' + name + '.jpg';
             var childPos = node.position.add(new BABYLON.Vector3(x, y, z));
             var newBall = new Ball(node, sphereRadius, name, childPos.x, childPos.y, childPos.z, imageName, 
@@ -109,6 +108,13 @@ class MainMesh extends BABYLON.Mesh{
 
     backClicked()
     {
+        console.log('backClicked dimension ' + this.dimension );
+        
+        if (this.dimension == 2)
+        {
+            this.zoomBack();
+        }
+
         if (this.dimension == 3)
         {
             for (var i=0; i < this.artArray.length; i++)
@@ -123,6 +129,7 @@ class MainMesh extends BABYLON.Mesh{
             this.dimension -=1;
             this.setEnabledAll(this.dimension, true);
             this.setEnabledAll(this.dimension-1, true);
+            this.fadeAll(true, this.dimension-1, true);
             this.fadeAll(true, this.dimension);
             Animations.CameraToRadius(scene.activeCamera, 7, 15, null);
 
@@ -141,18 +148,19 @@ class MainMesh extends BABYLON.Mesh{
 
         scene.selectedBall.scaleTo(1);
 
-        this.deselectAll();
+        this.deselectAll(this.dimension-1);
         this.scaleAll(false, this.dimension);
         this.fadeAll(false, this.dimension);
 
         setTimeout(() => { 
+            this.deleteAll(this.dimension);
+
             this.dimension -= 1;
 
             this.expandAll(1, true);
             this.fadeAll(true, this.dimension);
             Animations.CameraTargetToPosition(scene.activeCamera, this.position, 20, null);
             Animations.CameraToStartPosition(scene.activeCamera, 20, 15, null);
-            this.deleteAll(this.dimension +1);
 
         }, 1500/2);
     }
@@ -179,6 +187,8 @@ class MainMesh extends BABYLON.Mesh{
     }
 
     cameraChanged(){
+
+        //return;
         //if (this.dimension < 3)
         //{
             for (var i = 0; i < this.ballArray.length; i++)
@@ -207,10 +217,15 @@ class MainMesh extends BABYLON.Mesh{
         }
     }
 
-    fadeAll(inOut, dimension)
+    fadeAll(inOut, dimension, onlySelected = false)
     {
         for (var i = 0; i < this.ballArray.length; i++)
         {
+            if (onlySelected && !this.ballArray[i].isSelected)
+            {
+                continue;
+            }
+            
             if (this.ballArray[i] != scene.selectedBall && dimension == this.ballArray[i].dimension)
             {
                 if (inOut){
