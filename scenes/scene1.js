@@ -69,13 +69,12 @@ var createScene = function (engine) {
 	var bottomPanel = new BABYLON.GUI.StackPanel();	
 	bottomPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
 	bottomPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-	bottomPanel.paddingBottom = "10px";
-	bottomPanel.height = "60px";
-	bottomPanel.width = "200px";
+	bottomPanel.height = "0.06";
+	bottomPanel.width = "0.3";
 	var logo = new BABYLON.GUI.Image("Galatea", "logo.png");
-	bottomPanel.addControl(logo);
+	logo.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
 
-	
+	bottomPanel.addControl(logo);
 	advancedTexture.addControl(panel); 
 	advancedTexture.addControl(bottomPanel); 
 

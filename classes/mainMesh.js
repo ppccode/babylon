@@ -23,6 +23,7 @@ class MainMesh extends BABYLON.Mesh{
         this.artArray = [];
         this.dimension = 1;
         this.explodeVector = new BABYLON.Vector3(1.6, 1.6, 1.6);
+        this.selectedInDimension = [null, null, null, null];
 
         var ballCount = 7;
         var offset =  2.8;
@@ -31,16 +32,10 @@ class MainMesh extends BABYLON.Mesh{
 
         for (var i=1; i <= ballCount; i++)
         {
-            var phi = Math.acos(-1 + (2*i) / ballCount);
-            var theta = Math.sqrt( ballCount * Math.PI ) * phi;
-        
-            var x = (sphereRadius + offset) * Math.cos( theta ) * Math.sin( phi );
-            var y = (sphereRadius + offset) * Math.sin( theta ) * Math.sin( phi );
-            var z = (sphereRadius + offset) * Math.cos( phi );
-
+            var pos = getBallPosition(ballCount, i, sphereRadius, offset);
             var name = names[i-1];
             var imageName = 'Demo/Scene_1_2 [Bollen]/Bol_' + name + '.jpg';
-            var newBall = new Ball(this, sphereRadius, name, x, y, z, imageName, this.dimension, new BABYLON.Vector3.Zero());
+            var newBall = new Ball(this, sphereRadius, name, pos.x, pos.y, pos.z, imageName, this.dimension, new BABYLON.Vector3.Zero());
             this.ballArray.push(newBall);
 
             newBall.scaleIn();
@@ -52,21 +47,16 @@ class MainMesh extends BABYLON.Mesh{
 
         var ballCount = 5;
         var offset =  1;
-        var sphereRadius = 0.3;
-        var subNames = ['Small Work', 'Early Work', 'Late Work', 'Drawings', 'Main Body'];
+        var sphereRadius = 0.5;
+        var subNames = ['Pastel', 'Early Work', 'Late Work', 'Drawings', 'Main Body'];
 
         // create sub children
         for (var i=0; i < ballCount; i++)
         {
-            var grad = ((360 / ballCount) * i)  +20; // small offset
-            var rad = grad * (Math.PI / 180);
-            var x = Math.cos(rad) * offset;
-            var y = Math.sin(rad) * offset;
-            var z = 0;
-
+            var pos = getBallPosition(ballCount, i, sphereRadius, offset);
             var name = subNames[i];
             var imageName = 'Demo/Scene_3_4 [Bollen]/Bol_' + name + '.jpg';
-            var childPos = node.position.add(new BABYLON.Vector3(x, y, z));
+            var childPos = node.position.multiply(scene.mainMesh.explodeVector).add(new BABYLON.Vector3(pos.x, pos.y, pos.z));
             var newBall = new Ball(node, sphereRadius, name, childPos.x, childPos.y, childPos.z, imageName, 
                 this.dimension, node.position );
             this.ballArray.push(newBall);
@@ -78,26 +68,30 @@ class MainMesh extends BABYLON.Mesh{
 
     openArtwork(node)
     {
+        var selectedWork = scene.selectedBall.name;
+        var selectedData = null;
+        if (demoData.hasOwnProperty(selectedWork)) {
+            selectedData = demoData[selectedWork];
+        }
+        else{
+            this.backClicked();
+            return;
+        }
+        
         this.setEnabledAll(this.dimension, false);
         this.setEnabledAll(this.dimension-1, false);
 
         this.dimension +=1;
-        var ballCount = demoData.length;
+        var ballCount = selectedData.length;
         var offset =  14;
         var sphereRadius = 4;
 
+
         for (var i=0; i < ballCount; i++)
         {
-             //console.log(demoData[i]);   
-             var phi = Math.acos(-1 + (2*i) / ballCount);
-             var theta = Math.sqrt( ballCount * Math.PI ) * phi;
-         
-             var x = (sphereRadius + offset) * Math.cos( theta ) * Math.sin( phi );
-             var y = (sphereRadius + offset) * Math.sin( theta ) * Math.sin( phi );
-             var z = (sphereRadius + offset) * Math.cos( phi );
- 
-             var imageName = 'Demo/Scene_5_6 [Plaatjes]/' + demoData[i];
-             var childPos = node.position.add(new BABYLON.Vector3(x, y, z));
+            var pos = getBallPosition(ballCount, i, sphereRadius, offset);
+            var imageName = 'Demo/Julien Dinou/' + selectedWork + '/' + selectedData[i];
+            var childPos = node.position.add(new BABYLON.Vector3(pos.x, pos.y, pos.z));
 
              var newFrame = new Frame(node, sphereRadius, name, childPos, imageName, this.dimension, node.position );
              this.artArray.push(newFrame);
@@ -122,16 +116,17 @@ class MainMesh extends BABYLON.Mesh{
                 this.artArray[i].setEnabled(false);
                 this.artArray[i].dispose();
                 //this.artArray.splice(i, 1);
-
-                scene.render();
+                scene.activeCamera.radius = 0;
+                
             }
+            scene.render();
 
             this.dimension -=1;
             this.setEnabledAll(this.dimension, true);
             this.setEnabledAll(this.dimension-1, true);
             this.fadeAll(true, this.dimension-1, true);
             this.fadeAll(true, this.dimension);
-            Animations.CameraToRadius(scene.activeCamera, 7, 15, null);
+            Animations.CameraToRadius(scene.activeCamera, 14, 15, null);
 
         }
         if (this.dimension == 4)
@@ -145,22 +140,26 @@ class MainMesh extends BABYLON.Mesh{
     zoomBack()
     {
         console.log('zoomback dimension ' + this.dimension );
+    
 
-        scene.selectedBall.scaleTo(1);
+        scene.mainMesh.selectedInDimension[1].scaleTo(1);
 
         this.deselectAll(this.dimension-1);
         this.scaleAll(false, this.dimension);
         this.fadeAll(false, this.dimension);
 
+        this.dimension -= 1;
+
+        this.expandAll(1, true);
+        this.fadeAll(true, this.dimension);
+    
+        Animations.CameraTargetToPosition(scene.activeCamera, this.position, 20, null);
+        Animations.CameraToStartPosition(scene.activeCamera, 20, 15, null);
+
         setTimeout(() => { 
-            this.deleteAll(this.dimension);
+            this.deleteAll(this.dimension+1);
 
-            this.dimension -= 1;
-
-            this.expandAll(1, true);
-            this.fadeAll(true, this.dimension);
-            Animations.CameraTargetToPosition(scene.activeCamera, this.position, 20, null);
-            Animations.CameraToStartPosition(scene.activeCamera, 20, 15, null);
+            
 
         }, 1500/2);
     }

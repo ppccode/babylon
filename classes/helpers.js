@@ -1,4 +1,14 @@
 
+function getBallPosition(ballCount, current, sphereRadius, offset){
+    var phi = Math.acos(-1 + (2*current) / ballCount);
+    var theta = Math.sqrt( ballCount * Math.PI ) * phi;
+    var x = (sphereRadius + offset) * Math.cos( theta ) * Math.sin( phi );
+    var y = (sphereRadius + offset) * Math.sin( theta ) * Math.sin( phi );
+    var z = (sphereRadius + offset) * Math.cos( phi );
+
+    return new BABYLON.Vector3(x, y, z);
+}
+
 
 function createAxis(size, parent) {
     var makeTextPlane = function(text, color, size) {

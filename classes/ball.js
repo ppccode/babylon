@@ -154,24 +154,30 @@ class Ball extends BABYLON.Mesh{
 
     select() {
         this.isSelected = true;
+        scene.mainMesh.selectedInDimension[this.dimension] = this;
         scene.selectedBall = this;
 
         // not working with opacity
         this.highlight = new BABYLON.HighlightLayer("hl1", this.face._scene);
         this.highlight.addMesh(this.face, BABYLON.Color3.Yellow());
 
+        scene.render();
+
         if (this.dimension == 1)
         {
-            Animations.CameraTargetToPosition(scene.activeCamera, 
-                 this.defaultPos.multiply(scene.mainMesh.explodeVector), 15, null);
+            scene.mainMesh.createChildren(this); 
+            Animations.CameraTargetToPosition(scene.activeCamera, this.defaultPos.multiply(scene.mainMesh.explodeVector), 15, null);
             Animations.CameraToRadius(scene.activeCamera, 7, 15, null);
             scene.mainMesh.fadeAll(false, this.dimension);
-            scene.mainMesh.expandAll(1, false); 
+            scene.mainMesh.expandAll(1, false);
+            this.scaleTo(0.3);
+                scene.mainMesh.fadeAll(true, this.dimension+1);
 
             setTimeout(() => { 
-                scene.mainMesh.createChildren(this);
-                this.scaleTo(0.5);
-             }, 1500/2);
+                this.deSelect(); 
+                
+                
+             }, 1000/2);
         }
     
         if (this.dimension == 2)
@@ -186,33 +192,41 @@ class Ball extends BABYLON.Mesh{
             
 
             setTimeout(() => { 
+                scene.activeCamera.radius = 400;
                 scene.mainMesh.openArtwork(this.ballParent);
-                Animations.CameraToRadius(scene.activeCamera, 90, 15, null);
+                Animations.CameraToRadius(scene.activeCamera, 90, 20, null);
 
                 var ease2 = new BABYLON.SineEase();
-        ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-	// startup animation
-	BABYLON.Animation.CreateAndStartAnimation('at6', scene.activeCamera, 'alpha', 20, 60, 2.0 * Math.PI / 2, 1.0 * Math.PI / 2, 0, ease2).disposeOnEnd = true;
+                ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+	            // startup animation
+                BABYLON.Animation.CreateAndStartAnimation('at6', scene.activeCamera, 'alpha', 20, 60, 
+                  2.0 * Math.PI / 2, 1.0 * Math.PI / 2, 0, ease2).disposeOnEnd = true;
 
 
-            }, 1500/2);
+            }, 1000/2);
         }
         
     }
 
     userClicked() {
-        console.log('userClicked ' + this.name  + ' isSelected ' + this.isSelected);
+        console.log('userClicked ' + this.name  + ', isSelected ' + this.isSelected + ', dimension ' + this.dimension);
 
-        if (this.name != "Julien Dinou" && this.name != "Drawings")
+        if (this.dimension < scene.mainMesh.dimension)
         {
+            scene.mainMesh.zoomBack();
             return;
         }
-        
+
+        if (this.dimension == 1)
+        {
+            if (this.name != "Julien Dinou")
+            {
+                return;
+            }
+        }
+     
         if (this.isSelected){
-        //this.isSelected = false;
-           //scene.mainMesh.zoomBack();
-           //return;
-           this.dimension += 1;
+          // this.isSelected = false;
         }  
 
         //console.log(this.isEnabled);
