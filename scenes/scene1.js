@@ -103,13 +103,10 @@ var createScene = function (engine) {
 		dummyMain.beforeRender();
 		*/
 
-		//console.log(camera.beta)
+		console.log('beta ' + camera.beta + ', alpha ' + camera.alpha);
 	});
 	
-	var ease2 = new BABYLON.SineEase();
-        ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-	// startup animation
-	BABYLON.Animation.CreateAndStartAnimation('at6', camera, 'alpha', 20, 30, 3.0 * Math.PI / 2, 3.1 * Math.PI / 2, 0, ease2).disposeOnEnd = true;
+	Animations.CameraToRotation(camera, -4.586, 1.637, 30, null);
 
 	//createAxis(10, null);
 

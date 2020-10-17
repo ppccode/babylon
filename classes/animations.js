@@ -1,5 +1,17 @@
 class Animations{
 
+    static CameraToRotation(cam, alpha, beta, frameCount, onFinish)
+    {
+        var ease2 = new BABYLON.SineEase();
+        ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+        // startup animation
+        if (alpha != null){
+            BABYLON.Animation.CreateAndStartAnimation('at6', cam, 'alpha', 20, frameCount, cam.alpha, alpha, 0, ease2).disposeOnEnd = true;
+        }
+        if (beta != null){
+            BABYLON.Animation.CreateAndStartAnimation('at6', cam, 'beta', 20, frameCount, cam.beta, beta, 0, ease2).disposeOnEnd = true;
+        }
+    }
     
     static CameraTargetToPosition(cam, newPos, frameCount, onFinish)
     {
@@ -49,21 +61,21 @@ class Animations{
         anim.disposeOnEnd = true;
     }
 
-    static FadeIn(node, onEnd, frames = 11)
+    static FadeIn(node, onEnd, frames = 11, startAplha = 0, endAlpha = 1)
     {
         var ease2 = new BABYLON.SineEase();
         ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-        var anim = BABYLON.Animation.CreateAndStartAnimation('at10', node.material, 'alpha', 20, frames, 0, 1, 0, ease2, 
+        var anim = BABYLON.Animation.CreateAndStartAnimation('at10', node.material, 'alpha', 20, frames, startAplha, endAlpha, 0, ease2, 
             onEnd(node)
         );
         anim.disposeOnEnd = true;
     }
 
-    static FadeOut(node, onEnd, frames = 11)
+    static FadeOut(node, onEnd, frames = 11, startAplha = 1, endAlpha =0)
     {
         var ease2 = new BABYLON.SineEase();
         ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-        var anim = BABYLON.Animation.CreateAndStartAnimation('at11', node.material, 'alpha', 20, frames, 1, 0, 0, ease2, 
+        var anim = BABYLON.Animation.CreateAndStartAnimation('at11', node.material, 'alpha', 20, frames, startAplha, endAlpha, 0, ease2, 
             onEnd(node)    
         );
         anim.disposeOnEnd = true;

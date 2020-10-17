@@ -175,34 +175,22 @@ class Ball extends BABYLON.Mesh{
 
             setTimeout(() => { 
                 this.deSelect(); 
-                
+                Animations.CameraToRotation(scene.activeCamera, 0.394, 1.611, 15, null);
                 
              }, 1000/2);
         }
     
         if (this.dimension == 2)
         { 
+            Animations.CameraTargetToPosition(scene.activeCamera, this.position, 15, null);
             Animations.CameraToRadius(scene.activeCamera, 1.1, 15, null);
             scene.mainMesh.fadeAll(false, this.dimension);
-
-            if (this.ballParent.fadeOut)
-            {
-                this.ballParent.fadeOut();
-            }
-            
+            this.fadeOut();
 
             setTimeout(() => { 
                 scene.activeCamera.radius = 400;
                 scene.mainMesh.openArtwork(this.ballParent);
                 Animations.CameraToRadius(scene.activeCamera, 90, 20, null);
-
-                var ease2 = new BABYLON.SineEase();
-                ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-	            // startup animation
-                BABYLON.Animation.CreateAndStartAnimation('at6', scene.activeCamera, 'alpha', 20, 60, 
-                  2.0 * Math.PI / 2, 1.0 * Math.PI / 2, 0, ease2).disposeOnEnd = true;
-
-
             }, 1000/2);
         }
         

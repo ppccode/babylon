@@ -15,22 +15,26 @@ class Frame extends BABYLON.Mesh {
         this.startPos = startPos;
         this.position = position;
 
-        
+        var thumbFilePath = image.split('/');
+        var fileName = thumbFilePath[thumbFilePath.length-1];
+        this.thumbFileName = image.replace(fileName, 'thumb_' + fileName);
+        this.thumbFactor = 0.2;
     }
 
     load(num){
         //Creation of a repeated textured material
-        var texture = new BABYLON.Texture(this.image, scene, false, false, BABYLON.Texture.NEAREST_SAMPLINGMODE, ()=>{
+        this.texture = new BABYLON.Texture(this.thumbFileName, scene, false, false, BABYLON.Texture.NEAREST_SAMPLINGMODE, ()=>{
             // texture is loaded
             var materialPlane = new BABYLON.StandardMaterial("texturePlane", scene);
-            materialPlane.diffuseTexture = texture;
-            materialPlane.emissiveTexture = texture;
+            materialPlane.diffuseTexture = this.texture;
+            materialPlane.emissiveTexture = this.texture;
             materialPlane.specularColor = new BABYLON.Color3(0, 0, 0);
             materialPlane.backFaceCulling = false;//Allways show the front and the back of an element
             
+            this.materialPlane = materialPlane;
             
-            var sizearray = texture.getSize();
-            var divideFac = 130;
+            var sizearray = this.texture.getSize();
+            var divideFac = 130 * this.thumbFactor;
 
             //Creation of a plane
             this.face = BABYLON.Mesh.CreateGround("plane", sizearray.width/divideFac, sizearray.height/divideFac, 1, scene);
@@ -47,9 +51,7 @@ class Frame extends BABYLON.Mesh {
                 )
             );
 
-            
-
-            scene.render();
+            //scene.render();
 
             // load next
             num += 1;
@@ -61,11 +63,49 @@ class Frame extends BABYLON.Mesh {
         } );
     }
 
-    userClicked() {
-       Animations.CameraTargetToPosition(scene.activeCamera, this.defaultPos, 15, null);
-       Animations.CameraToRadius(scene.activeCamera, 10, 15, null);
+    fadeAll(fadeIn){
+        for (var i = 0; i < scene.mainMesh.artArray.length; i++)
+        {          
+            if (fadeIn){
+                if (!scene.mainMesh.artArray[i].isSelected){
+                    scene.mainMesh.artArray[i].fadeIn();
+                }
+                scene.mainMesh.artArray[i].isSelected = false;
+            }
+            else
+            {
+                if (scene.mainMesh.artArray[i].isSelected)
+                {
+                    continue;
+                }
+                scene.mainMesh.artArray[i].fadeOut();
+            } 
+        }
+    }
 
-       scene.mainMesh.dimension = 4;
+    fadeOut(){
+        Animations.FadeOut(this.face, function(sender){}, 10, 1, 0.2);
+    }
+
+    fadeIn(){
+        Animations.FadeIn(this.face, function(sender){}, 20, 0.2, 1);
+    }
+
+    userClicked() {
+        this.isSelected = true;
+
+        // load full resolution
+        this.bigTexture = new BABYLON.Texture(this.image, scene, false, false, BABYLON.Texture.NEAREST_SAMPLINGMODE, ()=>{
+            this.materialPlane.diffuseTexture = this.bigTexture;
+            this.materialPlane.emissiveTexture = this.bigTexture;
+        });
+
+        this.fadeAll();
+        
+        Animations.CameraTargetToPosition(scene.activeCamera, this.defaultPos, 15, null);
+        Animations.CameraToRadius(scene.activeCamera, 10, 15, null);
+
+        scene.mainMesh.dimension = 4;
     }
 
     lookAtCamera(){

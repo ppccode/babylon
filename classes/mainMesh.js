@@ -115,11 +115,10 @@ class MainMesh extends BABYLON.Mesh{
             {
                 this.artArray[i].setEnabled(false);
                 this.artArray[i].dispose();
-                //this.artArray.splice(i, 1);
-                scene.activeCamera.radius = 0;
-                
+                scene.activeCamera.radius = 0;              
             }
-            scene.render();
+            //scene.render();
+            this.artArray = [];
 
             this.dimension -=1;
             this.setEnabledAll(this.dimension, true);
@@ -131,6 +130,7 @@ class MainMesh extends BABYLON.Mesh{
         }
         if (this.dimension == 4)
         {            
+            this.artArray[0].fadeAll(true);
             Animations.CameraTargetToPosition(scene.activeCamera, scene.selectedBall.position, 15, null);
             Animations.CameraToRadius(scene.activeCamera, 90, 15, null);
             this.dimension -=1;
