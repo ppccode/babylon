@@ -1,8 +1,8 @@
 
 class Rendering2D{
 
-    static screen2D;
-    static backbutton;
+    //static screen2D;
+    //static backbutton;
 
     static create2dProjectedBall(name, ball)
     {
