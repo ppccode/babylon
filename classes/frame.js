@@ -33,11 +33,11 @@ class Frame extends BABYLON.Mesh {
             
             this.materialPlane = materialPlane;
             
-            var sizearray = this.texture.getSize();
+            this.sizearray = this.texture.getSize();
             var divideFac = 130 * this.thumbFactor;
 
             //Creation of a plane
-            this.face = BABYLON.Mesh.CreateGround("plane", sizearray.width/divideFac, sizearray.height/divideFac, 1, scene);
+            this.face = BABYLON.Mesh.CreateGround("plane", this.sizearray.width/divideFac, this.sizearray.height/divideFac, 1, scene);
             this.face.rotation.x = Math.PI / 2;
             this.face.material = materialPlane;
             this.face.parent = this;
@@ -52,6 +52,7 @@ class Frame extends BABYLON.Mesh {
             );
 
             //scene.render();
+            //this.fadeIn();
 
             // load next
             num += 1;
@@ -84,15 +85,32 @@ class Frame extends BABYLON.Mesh {
     }
 
     fadeOut(){
-        Animations.FadeOut(this.face, function(sender){}, 10, 1, 0.2);
+        Animations.FadeOut(this.face, function(sender){}, 10, 1, 0.1);
+        this.face.isPickable = false;
     }
 
     fadeIn(){
-        Animations.FadeIn(this.face, function(sender){}, 20, 0.2, 1);
+        Animations.FadeIn(this.face, function(sender){}, 20, 0.1, 1);
+        this.face.isPickable = true;
     }
 
     userClicked() {
+        if (this.isSelected)
+        {
+            scene.mainMesh.backClicked();
+            return;
+        }
+        
         this.isSelected = true;
+
+        this.highlight = new BABYLON.HighlightLayer("hl1", scene);
+        this.highlight.addMesh(this.face, BABYLON.Color3.Yellow());
+
+        setTimeout(() => { 
+            if (this.highlight) {
+                this.highlight.dispose();
+            }
+         }, 700);
 
         // load full resolution
         this.bigTexture = new BABYLON.Texture(this.image, scene, false, false, BABYLON.Texture.NEAREST_SAMPLINGMODE, ()=>{
@@ -101,9 +119,12 @@ class Frame extends BABYLON.Mesh {
         });
 
         this.fadeAll();
-        
+
+        // calculate zoompos on frame width
+        var radius = this.sizearray.width / 13;
+
         Animations.CameraTargetToPosition(scene.activeCamera, this.defaultPos, 15, null);
-        Animations.CameraToRadius(scene.activeCamera, 10, 15, null);
+        Animations.CameraToRadius(scene.activeCamera, radius, 15, null);
 
         scene.mainMesh.dimension = 4;
     }

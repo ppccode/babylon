@@ -42,15 +42,24 @@
     <!-- Link to pep.js to ensure pointer events work consistently in all browsers -->
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
 
-    
-    <script src="classes/ball.js"></script>
-    <script src="classes/frame.js"></script>
-    <script src="classes/mainMesh.js"></script>
-    <script src="classes/animations.js"></script>
-    <script src="classes/camera.js"></script>
-    <script src="classes/helpers.js"></script>
-    <script src="scenes/scene1.js"></script>
-    <script src="data/demo.js"></script>
+    <script>
+        var scripts = [
+            'classes/ball', 
+            'classes/frame', 
+            'classes/mainMesh', 
+            'classes/animations', 
+            'classes/camera', 
+            'classes/helpers',
+            'classes/2DRendering',
+            'scenes/scene1',
+            'data/demo'
+        ];
+
+        scripts.forEach(element => {
+            document.write('<script src="' + element + '.js?nocache=2"><\/script>');
+        });
+
+    </script>
 </head>
 
 <body>

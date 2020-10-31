@@ -23,7 +23,9 @@ class MainMesh extends BABYLON.Mesh{
         this.artArray = [];
         this.dimension = 1;
         this.explodeVector = new BABYLON.Vector3(1.6, 1.6, 1.6);
+        this.cameraRadius = [0, 20, 7, 90, 10, null];
         this.selectedInDimension = [null, null, null, null];
+        this.alphaRotationInDimension = [null, null, null, null];
 
         var ballCount = 7;
         var offset =  2.8;
@@ -66,8 +68,46 @@ class MainMesh extends BABYLON.Mesh{
         }
     }
 
-    openArtwork(node)
+    ballClicked(ball)
     {
+        this.alphaRotationInDimension[this.dimension] = scene.activeCamera.alpha;
+        
+        if (ball.dimension == 1)
+        {
+            this.createChildren(ball); 
+            Animations.CameraTargetToPosition(scene.activeCamera, ball.defaultPos.multiply(this.explodeVector), 15, null);
+            Animations.CameraToRadius(scene.activeCamera, this.cameraRadius[this.dimension], 15, null);
+            this.fadeAll(false, ball.dimension);
+            this.expandAll(1, false);
+            ball.scaleTo(0.3);
+            this.fadeAll(true, ball.dimension+1);
+
+            setTimeout(() => { 
+               // ball.deSelect(); 
+                //Animations.CameraToRotation(scene.activeCamera, 0.394, 1.611, 15, null);
+                
+             }, 1000/2);
+        }
+    
+        if (ball.dimension == 2)
+        { 
+            Animations.CameraTargetToPosition(scene.activeCamera, ball.position, 15, null);
+            Animations.CameraToRadius(scene.activeCamera, 2, 15, null);
+            this.fadeAll(false, ball.dimension);
+
+            setTimeout(() => { 
+                var fsBall = Rendering2D.addFullScreenBall(ball);
+                Animations.FadeOut(fsBall, function(sender){}, 20, 1, 0, BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+                scene.activeCamera.radius = 90;
+                this.openArtwork(ball.ballParent);
+
+                Rendering2D.addBackButton(ball);
+            }, 800);
+        }
+    }
+
+    openArtwork(node)
+    { 
         var selectedWork = scene.selectedBall.name;
         var selectedData = null;
         if (demoData.hasOwnProperty(selectedWork)) {
@@ -98,11 +138,16 @@ class MainMesh extends BABYLON.Mesh{
         }
 
         this.artArray[0].load(0);
+
+        //Animations.CameraToRotation(scene.activeCamera, scene.activeCamera.alpha + 0.5, null, 15, null);
     }
 
     backClicked()
     {
         console.log('backClicked dimension ' + this.dimension );
+        scene.activeCamera.beta = 0;
+        scene.activeCamera.alpha = this.alphaRotationInDimension[this.dimension-1];
+        
         
         if (this.dimension == 2)
         {
@@ -111,39 +156,45 @@ class MainMesh extends BABYLON.Mesh{
 
         if (this.dimension == 3)
         {
+            // remove art
             for (var i=0; i < this.artArray.length; i++)
             {
                 this.artArray[i].setEnabled(false);
-                this.artArray[i].dispose();
-                scene.activeCamera.radius = 0;              
+                this.artArray[i].dispose();                          
             }
-            //scene.render();
             this.artArray = [];
+            scene.activeCamera.radius = 2; 
 
+            Rendering2D.removeBackButton();
+
+            // fly back 
             this.dimension -=1;
-            this.setEnabledAll(this.dimension, true);
-            this.setEnabledAll(this.dimension-1, true);
-            this.fadeAll(true, this.dimension-1, true);
+            
+            this.setEnabledAll(this.dimension, true);      
             this.fadeAll(true, this.dimension);
-            Animations.CameraToRadius(scene.activeCamera, 14, 15, null);
+            this.selectedInDimension[this.dimension-1].setEnabled(true);
+            this.selectedInDimension[this.dimension-1].fadeIn();
 
+            Animations.CameraTargetToPosition(scene.activeCamera, this.selectedInDimension[this.dimension-1].position, 15, null);
+            Animations.CameraToRadius(scene.activeCamera, this.cameraRadius[this.dimension], 15, null);
+            //Animations.CameraToRotation(scene.activeCamera, 0.394, 1.611, 15, null);
         }
         if (this.dimension == 4)
         {            
             this.artArray[0].fadeAll(true);
             Animations.CameraTargetToPosition(scene.activeCamera, scene.selectedBall.position, 15, null);
-            Animations.CameraToRadius(scene.activeCamera, 90, 15, null);
             this.dimension -=1;
+            Animations.CameraToRadius(scene.activeCamera, scene.mainMesh.cameraRadius[scene.mainMesh.dimension], 15, null);
         }
     }
 
-    zoomBack()
-    {
-        console.log('zoomback dimension ' + this.dimension );
     
 
+    zoomBack()
+    {
+        console.log('zoomback dimension ' + this.dimension ); 
         scene.mainMesh.selectedInDimension[1].scaleTo(1);
-
+        this.setEnabledAll(this.dimension-1, true);
         this.deselectAll(this.dimension-1);
         this.scaleAll(false, this.dimension);
         this.fadeAll(false, this.dimension);
@@ -154,12 +205,10 @@ class MainMesh extends BABYLON.Mesh{
         this.fadeAll(true, this.dimension);
     
         Animations.CameraTargetToPosition(scene.activeCamera, this.position, 20, null);
-        Animations.CameraToStartPosition(scene.activeCamera, 20, 15, null);
+        Animations.CameraToStartPosition(scene.activeCamera, scene.mainMesh.cameraRadius[scene.mainMesh.dimension], 15, null);
 
         setTimeout(() => { 
             this.deleteAll(this.dimension+1);
-
-            
 
         }, 1500/2);
     }

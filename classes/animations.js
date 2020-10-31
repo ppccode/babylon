@@ -71,10 +71,10 @@ class Animations{
         anim.disposeOnEnd = true;
     }
 
-    static FadeOut(node, onEnd, frames = 11, startAplha = 1, endAlpha =0)
+    static FadeOut(node, onEnd, frames = 11, startAplha = 1, endAlpha =0, easingmode = BABYLON.EasingFunction.EASINGMODE_EASEINOUT)
     {
         var ease2 = new BABYLON.SineEase();
-        ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+        ease2.setEasingMode(easingmode);
         var anim = BABYLON.Animation.CreateAndStartAnimation('at11', node.material, 'alpha', 20, frames, startAplha, endAlpha, 0, ease2, 
             onEnd(node)    
         );

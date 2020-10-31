@@ -29,9 +29,11 @@ var createScene = function (engine) {
 	camera.lowerBetaLimit = 0.7;
 	camera.upperBetaLimit = 2.7;
 
+
 	//camera.inputs.clear();
 	camera.attachControl(canvas, true);
 	scene.cameraPosition = camera.position;
+	
 
 	// lights
 	var light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
@@ -44,40 +46,7 @@ var createScene = function (engine) {
 		scene.mainMesh.cameraChanged(e);
 	});
 
-
-	// GUI
-	var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-	
-	var panel = new BABYLON.GUI.StackPanel(); 
-	panel.paddingTop = "0.1";   
-	panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-	panel.height = "0.5";
-
-	var button = BABYLON.GUI.Button.CreateSimpleButton("backButton", "Back");
-    button.width = "0.2";
-	button.height = "0.1";
-	button.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-	button.color = "white";
-	button.cornerRadius = 20;
-	button.background = "green";
-    button.onPointerDownObservable.add(function() {
-		scene.mainMesh.backClicked();
-	});
-
-	panel.addControl(button);  
-
-	var bottomPanel = new BABYLON.GUI.StackPanel();	
-	bottomPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-	bottomPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-	bottomPanel.height = "0.06";
-	bottomPanel.width = "0.3";
-	var logo = new BABYLON.GUI.Image("Galatea", "logo.png");
-	logo.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
-
-	bottomPanel.addControl(logo);
-	advancedTexture.addControl(panel); 
-	advancedTexture.addControl(bottomPanel); 
-
+	Rendering2D.createGUI();
 
 	/****************************Key Controls************************************************/
 
@@ -103,7 +72,7 @@ var createScene = function (engine) {
 		dummyMain.beforeRender();
 		*/
 
-		console.log('beta ' + camera.beta + ', alpha ' + camera.alpha);
+		//console.log('beta ' + camera.beta + ', alpha ' + camera.alpha);
 	});
 	
 	Animations.CameraToRotation(camera, -4.586, 1.637, 30, null);

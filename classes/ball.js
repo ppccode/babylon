@@ -14,6 +14,7 @@ class Ball extends BABYLON.Mesh{
         this.dimension = dimension;
         this.defaultPos = new BABYLON.Vector3(x, y, z);
         this.startPos = startPos;
+        this.imageName = image;
 
         // create face
         var materialPlane = new BABYLON.StandardMaterial("texturePlane", parent._scene);
@@ -161,39 +162,12 @@ class Ball extends BABYLON.Mesh{
         this.highlight = new BABYLON.HighlightLayer("hl1", this.face._scene);
         this.highlight.addMesh(this.face, BABYLON.Color3.Yellow());
 
-        scene.render();
-
-        if (this.dimension == 1)
-        {
-            scene.mainMesh.createChildren(this); 
-            Animations.CameraTargetToPosition(scene.activeCamera, this.defaultPos.multiply(scene.mainMesh.explodeVector), 15, null);
-            Animations.CameraToRadius(scene.activeCamera, 7, 15, null);
-            scene.mainMesh.fadeAll(false, this.dimension);
-            scene.mainMesh.expandAll(1, false);
-            this.scaleTo(0.3);
-                scene.mainMesh.fadeAll(true, this.dimension+1);
-
-            setTimeout(() => { 
-                this.deSelect(); 
-                Animations.CameraToRotation(scene.activeCamera, 0.394, 1.611, 15, null);
-                
-             }, 1000/2);
-        }
-    
-        if (this.dimension == 2)
-        { 
-            Animations.CameraTargetToPosition(scene.activeCamera, this.position, 15, null);
-            Animations.CameraToRadius(scene.activeCamera, 1.1, 15, null);
-            scene.mainMesh.fadeAll(false, this.dimension);
-            this.fadeOut();
-
-            setTimeout(() => { 
-                scene.activeCamera.radius = 400;
-                scene.mainMesh.openArtwork(this.ballParent);
-                Animations.CameraToRadius(scene.activeCamera, 90, 20, null);
-            }, 1000/2);
-        }
-        
+        setTimeout(() => { 
+            scene.mainMesh.ballClicked(this);
+            if (this.highlight) {
+                this.highlight.dispose();
+            }
+         }, 10);
     }
 
     userClicked() {
