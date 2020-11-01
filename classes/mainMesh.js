@@ -71,6 +71,7 @@ class MainMesh extends BABYLON.Mesh{
     ballClicked(ball)
     {
         this.alphaRotationInDimension[this.dimension] = scene.activeCamera.alpha;
+        console.log('ballClicked dimension ' + this.dimension + ' alpha ' + scene.activeCamera.alpha);
         
         if (ball.dimension == 1)
         {
@@ -84,7 +85,7 @@ class MainMesh extends BABYLON.Mesh{
 
             setTimeout(() => { 
                // ball.deSelect(); 
-                //Animations.CameraToRotation(scene.activeCamera, 0.394, 1.611, 15, null);
+                Animations.CameraToRotation(scene.activeCamera, 0.394, 1.611, 15, null);
                 
              }, 1000/2);
         }
@@ -97,11 +98,12 @@ class MainMesh extends BABYLON.Mesh{
 
             setTimeout(() => { 
                 var fsBall = Rendering2D.addFullScreenBall(ball);
-                Animations.FadeOut(fsBall, function(sender){}, 20, 1, 0, BABYLON.EasingFunction.EASINGMODE_EASEOUT);
-                scene.activeCamera.radius = 90;
+                Animations.FadeOut(fsBall, function(sender){}, 15, 1, 0, BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+                scene.activeCamera.radius = 200;
                 this.openArtwork(ball.ballParent);
-
-                Rendering2D.addBackButton(ball);
+                Animations.CameraToRadius(scene.activeCamera, 90, 15, null);
+                Animations.BallToPosition(fsBall, new BABYLON.Vector3(0,0,2), 15);
+                Rendering2D.addBackButton(ball.ballParent);
             }, 800);
         }
     }
@@ -144,16 +146,13 @@ class MainMesh extends BABYLON.Mesh{
 
     backClicked()
     {
-        console.log('backClicked dimension ' + this.dimension );
-        scene.activeCamera.beta = 0;
-        scene.activeCamera.alpha = this.alphaRotationInDimension[this.dimension-1];
-        
+        var alpha = this.alphaRotationInDimension[this.dimension-1];
+        console.log('backClicked dimension ' + this.dimension + ' alpha ' + alpha);
         
         if (this.dimension == 2)
         {
             this.zoomBack();
         }
-
         if (this.dimension == 3)
         {
             // remove art
@@ -186,6 +185,8 @@ class MainMesh extends BABYLON.Mesh{
             this.dimension -=1;
             Animations.CameraToRadius(scene.activeCamera, scene.mainMesh.cameraRadius[scene.mainMesh.dimension], 15, null);
         }
+
+        Animations.CameraToRotation(scene.activeCamera, null, 1.7, 15, null);
     }
 
     

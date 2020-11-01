@@ -175,7 +175,7 @@ class Ball extends BABYLON.Mesh{
 
         if (this.dimension < scene.mainMesh.dimension)
         {
-            scene.mainMesh.zoomBack();
+            scene.mainMesh.backClicked();
             return;
         }
 

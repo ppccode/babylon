@@ -97,9 +97,12 @@ class Frame extends BABYLON.Mesh {
     userClicked() {
         if (this.isSelected)
         {
+            Rendering2D.setBackButtonEnabled(true);
             scene.mainMesh.backClicked();
             return;
         }
+
+        Rendering2D.setBackButtonEnabled(false);
         
         this.isSelected = true;
 

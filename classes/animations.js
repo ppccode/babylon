@@ -6,10 +6,15 @@ class Animations{
         ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
         // startup animation
         if (alpha != null){
+            // calc shortest turn
+            //2 * Math.PI
+            
             BABYLON.Animation.CreateAndStartAnimation('at6', cam, 'alpha', 20, frameCount, cam.alpha, alpha, 0, ease2).disposeOnEnd = true;
+            console.log('CameraToRotation alpha ' + cam.alpha + ' -> ' + alpha);
         }
         if (beta != null){
             BABYLON.Animation.CreateAndStartAnimation('at6', cam, 'beta', 20, frameCount, cam.beta, beta, 0, ease2).disposeOnEnd = true;
+            console.log('CameraToRotation beta ' + cam.beta+ ' -> ' + beta);
         }
     }
     

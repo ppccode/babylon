@@ -1,8 +1,8 @@
 
 class Rendering2D{
 
-    static screen2D;
-    static backbutton;
+    //static screen2D;
+    //static backbutton;
 
     static create2dProjectedBall(name, ball)
     {
@@ -32,6 +32,14 @@ class Rendering2D{
     {
         var fsBall = this.create2dProjectedBall("fsBall", ball); 
         return fsBall;
+    }
+
+    static setBackButtonEnabled(enabled)
+    {
+        if (this.backbutton)
+        {
+            this.backbutton.setEnabled(enabled);
+        }
     }
 
     static addBackButton(ball)

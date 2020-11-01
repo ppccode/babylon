@@ -72,6 +72,16 @@ var createScene = function (engine) {
 		dummyMain.beforeRender();
 		*/
 
+		if (camera.alpha > 2 * Math.PI)
+		{
+			camera.alpha = camera.alpha - 2 * Math.PI;
+		}
+
+		if (camera.alpha < 0)
+		{
+			camera.alpha = camera.alpha + 2 * Math.PI;
+		}
+
 		//console.log('beta ' + camera.beta + ', alpha ' + camera.alpha);
 	});
 	
