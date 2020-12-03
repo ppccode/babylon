@@ -48,7 +48,7 @@ class Rendering2D{
 
         var fsBall = this.create2dProjectedBall("bbBall", ball);
         fsBall.radius = 0.1; 
-        fsBall.position = new BABYLON.Vector3(-9, 17, 45);
+        fsBall.position = new BABYLON.Vector3(0, -17, 45);
         fsBall.isPickable = true;
 
         fsBall.actionManager = new BABYLON.ActionManager(scene);
@@ -88,9 +88,10 @@ class Rendering2D{
         bottomPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         bottomPanel.height = "0.06";
         bottomPanel.width = "0.3";
-        var logo = new BABYLON.GUI.Image("Galatea", "logo.png");
+        
+        /*var logo = new BABYLON.GUI.Image("Galatea", "logo.png");
         logo.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
-        bottomPanel.addControl(logo);
+        bottomPanel.addControl(logo);*/
 
         this.screen2D.addControl(bottomPanel); 
     }

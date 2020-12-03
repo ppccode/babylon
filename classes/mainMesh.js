@@ -80,12 +80,18 @@ class MainMesh extends BABYLON.Mesh{
             Animations.CameraToRadius(scene.activeCamera, this.cameraRadius[this.dimension], 15, null);
             this.fadeAll(false, ball.dimension);
             this.expandAll(1, false);
-            ball.scaleTo(0.3);
+            
+            //Animations.FadeFromTo(ball.face, function(sender){}, 15, 1, 0.3);
             this.fadeAll(true, ball.dimension+1);
 
             setTimeout(() => { 
+                ball.scaleTo(0.3);
+                 
+              }, 1000/2);
+
+            setTimeout(() => { 
                // ball.deSelect(); 
-                Animations.CameraToRotation(scene.activeCamera, 0.394, 1.611, 15, null);
+                //Animations.CameraToRotation(scene.activeCamera, 0.394, 1.611, 15, null);
                 
              }, 1000/2);
         }
@@ -195,6 +201,7 @@ class MainMesh extends BABYLON.Mesh{
     {
         console.log('zoomback dimension ' + this.dimension ); 
         scene.mainMesh.selectedInDimension[1].scaleTo(1);
+        //Animations.FadeFromTo(scene.mainMesh.selectedInDimension[1].face, function(sender){}, 15, 0.3, 1);
         this.setEnabledAll(this.dimension-1, true);
         this.deselectAll(this.dimension-1);
         this.scaleAll(false, this.dimension);

@@ -68,21 +68,19 @@ class Animations{
 
     static FadeIn(node, onEnd, frames = 11, startAplha = 0, endAlpha = 1)
     {
-        var ease2 = new BABYLON.SineEase();
-        ease2.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-        var anim = BABYLON.Animation.CreateAndStartAnimation('at10', node.material, 'alpha', 20, frames, startAplha, endAlpha, 0, ease2, 
-            onEnd(node)
-        );
-        anim.disposeOnEnd = true;
+        this.FadeFromTo(node, onEnd, frames, startAplha, endAlpha, BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
     }
 
-    static FadeOut(node, onEnd, frames = 11, startAplha = 1, endAlpha =0, easingmode = BABYLON.EasingFunction.EASINGMODE_EASEINOUT)
+    static FadeOut(node, onEnd, frames = 11, startAplha = 1, endAlpha = 0, easingmode = BABYLON.EasingFunction.EASINGMODE_EASEINOUT)
+    {
+        this.FadeFromTo(node, onEnd, frames, startAplha , endAlpha, easingmode);
+    }
+
+    static FadeFromTo(node, onEnd, frames = 11, startAplha, endAlpha, easingmode = BABYLON.EasingFunction.EASINGMODE_EASEINOUT)
     {
         var ease2 = new BABYLON.SineEase();
         ease2.setEasingMode(easingmode);
-        var anim = BABYLON.Animation.CreateAndStartAnimation('at11', node.material, 'alpha', 20, frames, startAplha, endAlpha, 0, ease2, 
-            onEnd(node)    
-        );
+        var anim = BABYLON.Animation.CreateAndStartAnimation('at12', node.material, 'alpha', 20, frames, startAplha, endAlpha, 0, ease2, onEnd);
         anim.disposeOnEnd = true;
     }
 
