@@ -120,9 +120,9 @@ class Ball extends BABYLON.Mesh{
         Animations.BallToPosition(this, this.defaultPos, 20);
     }
 
-    scaleTo(amount)
+    scaleTo(amount, frames = 15)
     {
-        Animations.Scale(this, this.scaling, new BABYLON.Vector3(amount, amount, amount), 15 );
+        Animations.Scale(this, this.scaling, new BABYLON.Vector3(amount, amount, amount), frames );
     }
 
     scaleOut()

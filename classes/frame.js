@@ -1,3 +1,4 @@
+
 class Frame extends BABYLON.Mesh {
 
     constructor(parent, diameter, name, position, image, dimension, startPos) {
@@ -51,9 +52,6 @@ class Frame extends BABYLON.Mesh {
                 )
             );
 
-            //scene.render();
-            //this.fadeIn();
-
             // load next
             num += 1;
             if (num < scene.mainMesh.artArray.length)
@@ -62,6 +60,56 @@ class Frame extends BABYLON.Mesh {
             }        
             
         } );
+    }
+
+    frameZoomedIn()
+    {
+        Rendering2D.createSoundButton(function(){
+
+            if (this.audiofile)
+            {
+                this.audiofile.stop();
+                this.audiofile.dispose();
+                return;
+            }
+
+            this.audiofile = new BABYLON.Sound(
+                "Audio_file_demo", "Demo/Audio_file_demo.mp3", scene, null, { 
+                   loop: false, 
+                   autoplay: true 
+                }
+             );
+        });
+        Rendering2D.createInfoButton(function(){
+            // onclick
+
+            if (this.infoEnabled)
+            {
+                this.infoEnabled = false;
+                Rendering2D.removeInfoText();
+                return;
+            }
+
+            this.infoEnabled = true;
+
+            Rendering2D.createInfoText(`
+            During his time in Paris, when Dinou decided to completely focus on painting, his work developed into a vivid, joyful and colourful abstract language. 
+            His city- & landscape paintings recall French impressionists (École de Paris), but in a simplified iconographic fashion, and with a very personal optic.
+            
+            As a true alchemist, he turned what he discovered in the impressionist method, around. 
+            Instead of analysing the general space out there, he analysed his personal memory of space within, using an impressionist tool-set. 
+            Compositions which were carefully constructed while going through his memory. 
+            
+            Titles of paintings were given according to the places he visited in the years. We can find curvatures  with musical origin. 
+            Feelings of a rendezvous with flowers, with nature; appearing as sighs in a streaming melody. 
+            
+            `);
+        });
+        console.log(this.image);
+        if ('Demo/Julien Dinou/Main Body/1962_Julien_Dinou_Oil_Canvas_Matin en Seine & Oise (Medium).jpg' == this.image)
+        {
+            Rendering2D.create2dprojectedText('Julien Dinou, Matin en Seine & Oise oil on canvas, 1962');
+        }
     }
 
     fadeAll(fadeIn){
@@ -99,6 +147,14 @@ class Frame extends BABYLON.Mesh {
         {
             Rendering2D.setBackButtonEnabled(true);
             scene.mainMesh.backClicked();
+
+            if (this.audiofile)
+            {
+                this.audiofile.stop();
+                this.audiofile.dispose();
+                return;
+            }
+            
             return;
         }
 
@@ -113,6 +169,7 @@ class Frame extends BABYLON.Mesh {
             if (this.highlight) {
                 this.highlight.dispose();
             }
+            this.frameZoomedIn();
          }, 700);
 
         // load full resolution

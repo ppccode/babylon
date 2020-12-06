@@ -5,28 +5,65 @@ class MainMesh extends BABYLON.Mesh{
         super("dummy", scene);
 
         // Skybox
-        /*var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1000.0}, scene);
+        var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1000.0}, scene);
         var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
         skyboxMaterial.backFaceCulling = false;
 
-        this.skyboxTexture = new BABYLON.CubeTexture("textures/TropicalSunnyDay/TropicalSunnyDay", scene);
+        this.skyboxTexture = new BABYLON.CubeTexture("textures/skybox/skybox", scene);
         skyboxMaterial.reflectionTexture = this.skyboxTexture;
 
         skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
         skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
         skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
         skybox.material = skyboxMaterial;
-*/
+
 
         this.rotationForceVector = BABYLON.Vector3.Zero();
         this.ballArray = [];
         this.artArray = [];
-        this.dimension = 1;
+        this.dimension = 0;
         this.explodeVector = new BABYLON.Vector3(1.6, 1.6, 1.6);
-        this.cameraRadius = [0, 20, 7, 90, 10, null];
+        this.cameraRadius = [10, 20, 7, 90, 10, null];
         this.selectedInDimension = [null, null, null, null];
         this.alphaRotationInDimension = [null, null, null, null];
+        this.autoRotate = true;
 
+        this.createfirstBall();
+
+    }
+
+    beforeRender(){
+        if (this.dimension == 1 && this.autoRotate)
+        {
+            // soft rotation
+           // scene.activeCamera.alpha = scene.activeCamera.alpha + 0.01;
+        }
+    }
+
+    cameraChanged(){
+        for (var i = 0; i < this.ballArray.length; i++)
+        {
+            this.ballArray[i].lookAtCamera()
+        }
+        for (var i = 0; i < this.artArray.length; i++)
+        {
+            this.artArray[i].lookAtCamera()
+        }
+
+        //console.log(scene.activeCamera.alpha);
+
+    }
+
+    createfirstBall(){
+        var imageName = 'Demo/first_dimension.jpg';
+        var newBall = new Ball(this, 3, 'Galatea', 0, 0, 0, imageName, 0, new BABYLON.Vector3.Zero());
+        this.ballArray.push(newBall);
+        newBall.scaleIn();
+        newBall.fadeIn();
+    }
+
+    createParent()
+    {
         var ballCount = 7;
         var offset =  2.8;
         var sphereRadius = 1;
@@ -73,6 +110,21 @@ class MainMesh extends BABYLON.Mesh{
         this.alphaRotationInDimension[this.dimension] = scene.activeCamera.alpha;
         console.log('ballClicked dimension ' + this.dimension + ' alpha ' + scene.activeCamera.alpha);
         
+        if (ball.dimension == 0)
+        {
+            Animations.FadeOut(ball.face, function(sender){}, 15, 1, 0, BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+            ball.scaleTo(3.0);     
+            Animations.CameraToRotation(scene.activeCamera, Math.PI, 1.637, 20, null);
+            this.dimension +=1;
+            this.createParent();
+
+            setTimeout(() => { 
+                this.deleteAll(0)
+              }, 1000);
+
+            return;
+        }
+
         if (ball.dimension == 1)
         {
             this.createChildren(ball); 
@@ -85,7 +137,7 @@ class MainMesh extends BABYLON.Mesh{
             this.fadeAll(true, ball.dimension+1);
 
             setTimeout(() => { 
-                ball.scaleTo(0.3);
+                ball.scaleTo(0.3, 7);
                  
               }, 1000/2);
 
@@ -186,6 +238,7 @@ class MainMesh extends BABYLON.Mesh{
         }
         if (this.dimension == 4)
         {            
+            Rendering2D.removeFrameControls();
             this.artArray[0].fadeAll(true);
             Animations.CameraTargetToPosition(scene.activeCamera, scene.selectedBall.position, 15, null);
             this.dimension -=1;
@@ -236,30 +289,6 @@ class MainMesh extends BABYLON.Mesh{
                 }
             }
         }
-    }
-
-    beforeRender(){
-
-    }
-
-    cameraChanged(){
-
-        //return;
-        //if (this.dimension < 3)
-        //{
-            for (var i = 0; i < this.ballArray.length; i++)
-            {
-                this.ballArray[i].lookAtCamera()
-            }
-      //  }
-        
-       // if (this.dimension = 3)
-      //  {
-            for (var i = 0; i < this.artArray.length; i++)
-            {
-                this.artArray[i].lookAtCamera()
-            }
-       // }
     }
 
     deselectAll(dimension)

@@ -4,6 +4,7 @@ class Rendering2D{
     //static screen2D;
     //static backbutton;
 
+
     static create2dProjectedBall(name, ball)
     {
         var fsBall = BABYLON.MeshBuilder.CreateDisc(name, {
@@ -26,6 +27,129 @@ class Rendering2D{
         }
 
         return fsBall;
+    }
+
+    static create2dprojectedText(text)
+    {
+        var ball2d = this.create2dProjectedBall('text', null);
+        ball2d.position = new BABYLON.Vector3(0, -17, 45); 
+        ball2d.scaling = new BABYLON.Vector3(14,14,14);
+        ball2d.rotation.x= Math.PI;
+        
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(ball2d);
+
+        var label = new BABYLON.GUI.TextBlock();
+        label.fontFamily = 'arial';
+        label.text = text;
+        
+        label.resizeToFit = true;
+        label.textWrapping = true;
+        label.height = 0.1;
+        label.width = 0.4;
+        label.color = 'white';
+        //label.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        label.fontSize = 24;
+
+        this.label = label;
+        this.textBall = ball2d;
+        
+        advancedTexture.addControl(label);
+    }
+
+    static createInfoText(text)
+    {
+        var ball2d = this.create2dProjectedBall('text', null);
+        ball2d.position = new BABYLON.Vector3(0, 0, 2); 
+        ball2d.scaling = new BABYLON.Vector3(0.5,0.5,0.5);
+        ball2d.rotation.x= Math.PI;
+        
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(ball2d);
+        
+        var rect1 = new BABYLON.GUI.Rectangle();
+        rect1.height = 1;
+        rect1.width = 1;
+        rect1.cornerRadius = 0;
+        rect1.thickness = 0;
+        rect1.background = "#000000f0";
+        advancedTexture.addControl(rect1);
+        
+        var label = new BABYLON.GUI.TextBlock();
+        label.fontFamily = 'arial';
+        label.text = text;
+        
+        label.resizeToFit = true;
+        label.textWrapping = true;
+        label.height = 0.1;
+        label.width = 0.4;
+        label.color = 'white';
+        //label.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        label.fontSize = 24;
+
+        this.label = label;
+        this.infoText = ball2d;
+        
+        advancedTexture.addControl(label);
+    }
+
+    static removeInfoText()
+    {
+        if (this.infoText)
+        {
+            this.infoText.setEnabled(false);
+            this.infoText.dispose();
+        } 
+    }
+
+    static removeFrameControls()
+    {
+        if (this.textBall)
+        {
+            this.textBall.setEnabled(false);
+            this.textBall.dispose();
+        }
+        if (this.soundButton)
+        {
+            this.soundButton.setEnabled(false);
+            this.soundButton.dispose();
+        } 
+        if (this.infoButton)
+        {
+            this.infoButton.setEnabled(false);
+            this.infoButton.dispose();
+        } 
+        this.removeInfoText();
+    }
+
+    static createButton(imageUrl, position, onclick)
+    {
+        var ball2d = this.create2dProjectedBall(imageUrl, null);
+        ball2d.position = position;
+
+        var materialPlane = new BABYLON.StandardMaterial(name, scene);
+        var texture = new BABYLON.Texture(imageUrl, scene, false, false);
+        materialPlane.diffuseTexture = texture;
+        materialPlane.emissiveTexture = texture;
+        materialPlane.specularColor = new BABYLON.Color3(0, 0, 0);
+        ball2d.material = materialPlane;
+
+        ball2d.isPickable = true;
+
+        ball2d.actionManager = new BABYLON.ActionManager(scene);
+        ball2d.actionManager.registerAction(
+            new BABYLON.ExecuteCodeAction( BABYLON.ActionManager.OnPickTrigger, onclick)
+        );
+
+        return ball2d;
+    }
+
+    static createSoundButton(clickhandler)
+    {
+        this.soundButton = this.createButton('Demo/geluid.png', new BABYLON.Vector3(-10, -17, 45), clickhandler);
+    }
+
+    static createInfoButton(clickhandler)
+    {
+        this.infoButton = this.createButton('Demo/info.png', new BABYLON.Vector3(10, -17, 45), clickhandler);
     }
 
     static addFullScreenBall(ball)

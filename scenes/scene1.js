@@ -50,7 +50,7 @@ var createScene = function (engine) {
 
 	/****************************Key Controls************************************************/
 
-	var map = {}; //object for multiple key presses
+	/*var map = {}; //object for multiple key presses
 	scene.actionManager = new BABYLON.ActionManager(scene);
 	scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {								
 			map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
@@ -60,7 +60,7 @@ var createScene = function (engine) {
 	scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyUpTrigger, function (evt) {								
 			map[evt.sourceEvent.key] = evt.sourceEvent.type == "keydown";
 		}));	
-		
+		*/
 	/****************************End Key Controls************************************************/
 	
 	scene.registerBeforeRender( function(){
@@ -82,10 +82,12 @@ var createScene = function (engine) {
 			camera.alpha = camera.alpha + 2 * Math.PI;
 		}
 
+		scene.mainMesh.beforeRender();
+
 		//console.log('beta ' + camera.beta + ', alpha ' + camera.alpha);
 	});
 	
-	Animations.CameraToRotation(camera, -4.586, 1.637, 30, null);
+	
 
 	//createAxis(10, null);
 
