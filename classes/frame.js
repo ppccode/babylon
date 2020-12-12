@@ -56,7 +56,10 @@ class Frame extends BABYLON.Mesh {
             num += 1;
             if (num < scene.mainMesh.artArray.length)
             {
-                scene.mainMesh.artArray[num].load(num);      
+                scene.mainMesh.artArray[num].load(num); 
+
+                // rotate ball
+                scene.activeCamera.alpha = scene.activeCamera.alpha -0.02;     
             }        
             
         } );

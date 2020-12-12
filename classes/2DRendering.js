@@ -4,6 +4,25 @@ class Rendering2D{
     //static screen2D;
     //static backbutton;
 
+    static view2d()
+    {
+        if (this.advancedTexture == null)
+        {
+            var frame2d = BABYLON.MeshBuilder.CreatePlane(name, {
+                width: 20, height: 20, sideOrientation: BABYLON.Mesh.BILLBOARDMODE_ALL
+            }, scene);
+    
+            frame2d.parent = scene.activeCamera;
+            frame2d.isPickable = false;
+            frame2d.position = new BABYLON.Vector3(0, 0, 2); 
+            frame2d.scaling = new BABYLON.Vector3(0.1,0.1,0.1);
+    
+            this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(frame2d);
+        }
+    
+        return this.advancedTexture;
+    }
+
 
     static create2dProjectedBall(name, ball)
     {
@@ -31,47 +50,31 @@ class Rendering2D{
 
     static create2dprojectedText(text)
     {
-        var ball2d = this.create2dProjectedBall('text', null);
-        ball2d.position = new BABYLON.Vector3(0, -17, 45); 
-        ball2d.scaling = new BABYLON.Vector3(14,14,14);
-        ball2d.rotation.x= Math.PI;
-        
-        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(ball2d);
-
         var label = new BABYLON.GUI.TextBlock();
         label.fontFamily = 'arial';
-        label.text = text;
-        
+        label.text = text;    
         label.resizeToFit = true;
         label.textWrapping = true;
-        label.height = 0.1;
-        label.width = 0.4;
+        label.height = 0.3;
+        label.width = 0.3;
         label.color = 'white';
-        //label.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        label.fontSize = 24;
+        label.fontSize = 18;
+        label.top = 385; 
 
         this.label = label;
-        this.textBall = ball2d;
         
-        advancedTexture.addControl(label);
+        this.view2d().addControl(label);
     }
 
     static createInfoText(text)
     {
-        var ball2d = this.create2dProjectedBall('text', null);
-        ball2d.position = new BABYLON.Vector3(0, 0, 2); 
-        ball2d.scaling = new BABYLON.Vector3(0.5,0.5,0.5);
-        ball2d.rotation.x= Math.PI;
-        
-        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(ball2d);
-        
         var rect1 = new BABYLON.GUI.Rectangle();
-        rect1.height = 1;
+        rect1.height = 0.63;
         rect1.width = 1;
         rect1.cornerRadius = 0;
         rect1.thickness = 0;
         rect1.background = "#000000f0";
-        advancedTexture.addControl(rect1);
+        this.view2d().addControl(rect1);
         
         var label = new BABYLON.GUI.TextBlock();
         label.fontFamily = 'arial';
@@ -79,33 +82,31 @@ class Rendering2D{
         
         label.resizeToFit = true;
         label.textWrapping = true;
-        label.height = 0.1;
-        label.width = 0.4;
+        label.height = 0.6;
+        label.width = 0.5;
         label.color = 'white';
-        //label.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        label.fontSize = 24;
+       // label.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        label.fontSize = 18;
 
-        this.label = label;
-        this.infoText = ball2d;
-        
-        advancedTexture.addControl(label);
+        this.infoText = label;
+        this.infoTextBack = rect1;
+        this.view2d().addControl(label);
     }
 
     static removeInfoText()
     {
         if (this.infoText)
         {
-            this.infoText.setEnabled(false);
-            this.infoText.dispose();
+            this.view2d().removeControl(this.infoText);
+            this.view2d().removeControl(this.infoTextBack);
         } 
     }
 
     static removeFrameControls()
     {
-        if (this.textBall)
+        if (this.label)
         {
-            this.textBall.setEnabled(false);
-            this.textBall.dispose();
+            this.view2d().removeControl(this.label);
         }
         if (this.soundButton)
         {
@@ -199,7 +200,7 @@ class Rendering2D{
     static createGUI()
     {
         // GUI
-        this.screen2D = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        /*this.screen2D = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
         
         var panel = new BABYLON.GUI.StackPanel(); 
         panel.paddingTop = "0.1";   
@@ -217,7 +218,8 @@ class Rendering2D{
         logo.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
         bottomPanel.addControl(logo);*/
 
-        this.screen2D.addControl(bottomPanel); 
+       /* this.screen2D.addControl(bottomPanel); 
+        this.bottomPanel = bottomPanel;*/ 
     }
 }
 

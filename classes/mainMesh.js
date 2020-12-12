@@ -60,6 +60,16 @@ class MainMesh extends BABYLON.Mesh{
         this.ballArray.push(newBall);
         newBall.scaleIn();
         newBall.fadeIn();
+
+       /* Rendering2D.createInfoText(`
+            ertertswert
+            wertwert
+            ertert
+            weqrt
+            wer
+        `);*/
+
+        //Rendering2D.create2dprojectedText('Julien Dinou, Matin en Seine & Oise oil on canvas, 1962');
     }
 
     createParent()
@@ -112,11 +122,12 @@ class MainMesh extends BABYLON.Mesh{
         
         if (ball.dimension == 0)
         {
+            this.dimension +=1;
+            this.createParent();
+
             Animations.FadeOut(ball.face, function(sender){}, 15, 1, 0, BABYLON.EasingFunction.EASINGMODE_EASEOUT);
             ball.scaleTo(3.0);     
             Animations.CameraToRotation(scene.activeCamera, Math.PI, 1.637, 20, null);
-            this.dimension +=1;
-            this.createParent();
 
             setTimeout(() => { 
                 this.deleteAll(0)
