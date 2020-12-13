@@ -95,18 +95,18 @@ class Frame extends BABYLON.Mesh {
 
             this.infoEnabled = true;
 
-            Rendering2D.createInfoText(`
-            During his time in Paris, when Dinou decided to completely focus on painting, his work developed into a vivid, joyful and colourful abstract language. 
-            His city- & landscape paintings recall French impressionists (École de Paris), but in a simplified iconographic fashion, and with a very personal optic.
-            
-            As a true alchemist, he turned what he discovered in the impressionist method, around. 
-            Instead of analysing the general space out there, he analysed his personal memory of space within, using an impressionist tool-set. 
-            Compositions which were carefully constructed while going through his memory. 
-            
-            Titles of paintings were given according to the places he visited in the years. We can find curvatures  with musical origin. 
-            Feelings of a rendezvous with flowers, with nature; appearing as sighs in a streaming melody. 
-            
-            `);
+            Rendering2D.createInfoText(
+`During his time in Paris, when Dinou decided to completely focus on painting, his work developed into a vivid, joyful and colourful abstract language.
+
+His city- & landscape paintings recall French impressionists (École de Paris), but in a simplified iconographic fashion, and with a very personal optic.
+
+As a true alchemist, he turned what he discovered in the impressionist method, around.
+Instead of analysing the general space out there, he analysed his personal memory of space within, using an impressionist tool-set.
+Compositions which were carefully constructed while going through his memory.
+
+Titles of paintings were given according to the places he visited in the years. We can find curvatures  with musical origin.
+Feelings of a rendezvous with flowers, with nature; appearing as sighs in a streaming melody.`
+            );
         });
         console.log(this.image);
         if ('Demo/Julien Dinou/Main Body/1962_Julien_Dinou_Oil_Canvas_Matin en Seine & Oise (Medium).jpg' == this.image)
@@ -185,6 +185,11 @@ class Frame extends BABYLON.Mesh {
 
         // calculate zoompos on frame width
         var radius = this.sizearray.width / 13;
+
+        if (window.innerWidth > window.innerHeight && this.sizearray.width > this.sizearray.height)
+        {
+            radius = radius * 0.65;
+        }
 
         Animations.CameraTargetToPosition(scene.activeCamera, this.defaultPos, 15, null);
         Animations.CameraToRadius(scene.activeCamera, radius, 15, null);

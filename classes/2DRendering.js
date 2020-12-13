@@ -1,9 +1,6 @@
 
 class Rendering2D{
 
-    //static screen2D;
-    //static backbutton;
-
     static view2d()
     {
         if (this.advancedTexture == null)
@@ -69,22 +66,25 @@ class Rendering2D{
     {
         var rect1 = new BABYLON.GUI.Rectangle();
         rect1.height = 0.63;
-        rect1.width = 1;
+        rect1.width = 0.53;
         rect1.cornerRadius = 0;
         rect1.thickness = 0;
-        rect1.background = "#000000f0";
+        //rect1.background = "#000000f0";
+        rect1.background = "#fffffff0";
         this.view2d().addControl(rect1);
         
         var label = new BABYLON.GUI.TextBlock();
         label.fontFamily = 'arial';
         label.text = text;
         
-        label.resizeToFit = true;
+        //label.resizeToFit = true;
         label.textWrapping = true;
-        label.height = 0.6;
-        label.width = 0.5;
-        label.color = 'white';
-       // label.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        label.height = 0.55;
+        label.width = 0.49;
+        label.color = 'black';
+        //label.color = 'white';
+        label.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        label.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
         label.fontSize = 18;
 
         this.infoText = label;
@@ -145,18 +145,18 @@ class Rendering2D{
 
     static createSoundButton(clickhandler)
     {
-        //this.soundButton = this.createButton('Demo/geluid.png', new BABYLON.Vector3(-10, -17, 45), clickhandler);
-        this.soundButton = this.createButton('Demo/geluid.png', new BABYLON.Vector3(-0.4, -0.7, 2), clickhandler);
+        this.soundButton = this.createButton('Demo/geluid.png', new BABYLON.Vector3(-0.45, -0.75, 2), clickhandler);
     }
 
     static createInfoButton(clickhandler)
     {
-        this.infoButton = this.createButton('Demo/info.png', new BABYLON.Vector3(10, -17, 45), clickhandler);
+        this.infoButton = this.createButton('Demo/info.png', new BABYLON.Vector3(0.45, -0.75, 2), clickhandler);
     }
 
     static addFullScreenBall(ball)
     {
         var fsBall = this.create2dProjectedBall("fsBall", ball); 
+        fsBall
         return fsBall;
     }
 
@@ -171,23 +171,10 @@ class Rendering2D{
     static addBackButton(ball)
     {
         this.removeBackButton();
-
-        var fsBall = this.create2dProjectedBall("bbBall", ball);
-        fsBall.radius = 0.1; 
-        fsBall.position = new BABYLON.Vector3(0, -17, 45);
-        fsBall.isPickable = true;
-
-        fsBall.actionManager = new BABYLON.ActionManager(scene);
-        fsBall.actionManager.registerAction(
-            new BABYLON.ExecuteCodeAction(
-                BABYLON.ActionManager.OnPickDownTrigger, function (sender) {
-                    scene.mainMesh.backClicked();
-                }
-            )
+        this.backbutton = this.createButton(ball.imageName, new BABYLON.Vector3(0, -0.75, 2), function (sender) {
+                scene.mainMesh.backClicked();
+            }
         );
-
-        this.backbutton = fsBall;
-        return fsBall;
     }
 
     static removeBackButton(){
