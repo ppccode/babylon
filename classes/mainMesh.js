@@ -60,18 +60,6 @@ class MainMesh extends BABYLON.Mesh{
         this.ballArray.push(newBall);
         newBall.scaleIn();
         newBall.fadeIn();
-
-        Rendering2D.createButton('Demo/geluid.png', new BABYLON.Vector3(0, 0, 2), null);
-
-       /* Rendering2D.createInfoText(`
-            ertertswert
-            wertwert
-            ertert
-            weqrt
-            wer
-        `);*/
-
-        //Rendering2D.create2dprojectedText('Julien Dinou, Matin en Seine & Oise oil on canvas, 1962');
     }
 
     createParent()
