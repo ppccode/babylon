@@ -23,7 +23,6 @@ class Rendering2D{
         return this.advancedTexture;
     }
 
-
     static create2dProjectedBall(name, ball)
     {
         var fsBall = BABYLON.MeshBuilder.CreateDisc(name, {
@@ -125,7 +124,8 @@ class Rendering2D{
     {
         var ball2d = this.create2dProjectedBall(imageUrl, null);
         ball2d.position = position;
-
+        ball2d.scaling = new BABYLON.Vector3(0.05, 0.05, 0.05);
+        
         var materialPlane = new BABYLON.StandardMaterial(name, scene);
         var texture = new BABYLON.Texture(imageUrl, scene, false, false);
         materialPlane.diffuseTexture = texture;
@@ -145,7 +145,8 @@ class Rendering2D{
 
     static createSoundButton(clickhandler)
     {
-        this.soundButton = this.createButton('Demo/geluid.png', new BABYLON.Vector3(-10, -17, 45), clickhandler);
+        //this.soundButton = this.createButton('Demo/geluid.png', new BABYLON.Vector3(-10, -17, 45), clickhandler);
+        this.soundButton = this.createButton('Demo/geluid.png', new BABYLON.Vector3(-0.4, -0.7, 2), clickhandler);
     }
 
     static createInfoButton(clickhandler)
